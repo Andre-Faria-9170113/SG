@@ -2,7 +2,7 @@
 var scene, renderer, camera;
 
 // 3D Models
-var swordPivot; 
+var swordPivot;
 
 var verticalSwingValue = 0;
 var verticalSwingTotal = 0;
@@ -69,20 +69,23 @@ function createScene() {
     window.addEventListener('resize', handleWindowResize, false);
 }
 
-function createSword(){
+function createSword() {
     var swordGeometry = new THREE.BoxGeometry(2, 100, 10);
     var swordMaterial = new THREE.MeshPhongMaterial({ color: 0xd8d0d1 });
-    var sword =  new THREE.Mesh(swordGeometry, swordMaterial);
+    var sword = new THREE.Mesh(swordGeometry, swordMaterial);
 
     swordPivot = new THREE.Object3D();
 
     swordPivot.add(sword);
     scene.add(swordPivot);
     sword.position.y += 20;
-    swordPivot.position.set(0,0,0);
+    swordPivot.position.set(0, 0, 0);
 
     sword.castShadow = true;
     sword.receiveShadow = true;
+
+    var axes = new THREE.AxisHelper(100);
+    swordPivot.add(axes)
 }
 
 function handleWindowResize() {
@@ -119,12 +122,12 @@ function animate() {
     // render
     renderer.render(scene, camera);
 
-     //update objects
-     updateSword();
+    //update objects
+    updateSword();
 
     requestAnimationFrame(animate);
 
-   
+
 }
 
 
@@ -137,29 +140,33 @@ function handleMouseMove(event) {
     mousePos = { x: tx, y: ty };
 }
 function handleMouseDown(event) {
-    if(event.shiftKey){
-       
-        while(horizontalSwingTotal >= 0 && verticalSwingTotal >= 0){
+    if (event.shiftKey) {
+        //swordPivot.rotation.z = -Math.PI/2;
+
+        if (horizontalSwingTotal >= 0 && verticalSwingTotal >= 0) {
             console.log("horizontal")
-            horizontalSwingValue = -0.80
+            horizontalSwingValue = -0.25
             horizontalSwingTotal = -0.01
             horizontalSwingDecay = -0.02
-            swordPivot.rotation.z += horizontalSwingTotal;
+            //swordPivot.rotation.z += horizontalSwingTotal;
+            verticalSwingValue = -0.50
+            verticalSwingTotal = -0.75
+            verticalSwingDecay = -0.02
         }
     }
-    else{
-        
-        while(verticalSwingTotal >= 0 && horizontalSwingTotal >= 0){
+    else {
+
+        if (verticalSwingTotal >= 0 && horizontalSwingTotal >= 0) {
             console.log("vertical")
             verticalSwingValue = -0.50
             verticalSwingTotal = -0.75
             verticalSwingDecay = -0.02
-            swordPivot.rotation.x += verticalSwingTotal;
+            // swordPivot.rotation.x += verticalSwingTotal;
         }
     }
-    
 
-    
+
+
 }
 
 function updateSword() {
@@ -172,19 +179,23 @@ function updateSword() {
     // plane.position.y = targetY + 100;
 
     // update the sword's position SMOOTHLY
-    swordPivot.position.x += (targetX - swordPivot.position.x  + 100) * 0.1;
+    swordPivot.position.x += (targetX - swordPivot.position.x + 100) * 0.1;
     swordPivot.position.y += (targetY - swordPivot.position.y + 100) * 0.1;
-    swordPivot.rotation.z = (targetY - swordPivot.position.y + 100) * 0.013;
-    
+    // swordPivot.rotation.z = (targetY - swordPivot.position.y + 100) * 0.013;
+
     swordPivot.rotation.x += verticalSwingValue;
     swordPivot.rotation.z += horizontalSwingValue;
+
+    console.log(horizontalSwingValue + " " + swordPivot.rotation.z)
+
+
     verticalSwingTotal += verticalSwingValue;
     verticalSwingValue -= verticalSwingDecay;
     horizontalSwingTotal += horizontalSwingValue;
     horizontalSwingValue -= horizontalSwingDecay;
-    console.log("value: "+horizontalSwingValue + "  total: "+horizontalSwingTotal+ "    decay:"+horizontalSwingDecay)
-    
-    if(verticalSwingTotal < -2 * Math.PI){
+    //console.log("value: " + horizontalSwingValue + "  total: " + horizontalSwingTotal + "    decay:" + horizontalSwingDecay)
+
+    if (verticalSwingTotal < -2 * Math.PI) {
         verticalSwingTotal = 0;
         verticalSwingValue = 0;
         verticalSwingDecay = 0;
@@ -192,7 +203,7 @@ function updateSword() {
         console.log("done")
     }
 
-    if(horizontalSwingTotal >  0){
+    if (horizontalSwingTotal > 0) {
         horizontalSwingTotal = 0;
         horizontalSwingValue = 0;
         horizontalSwingDecay = 0;
