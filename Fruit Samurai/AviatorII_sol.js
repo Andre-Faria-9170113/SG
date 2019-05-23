@@ -1,16 +1,22 @@
 // THREEJS RELATED VARIABLES
-var scene, renderer, camera;
+var scene, renderer, camera, plane;
 
 // 3D Models
 var swordPivot;
+var sword;
 
 var verticalSwingValue = 0;
 var verticalSwingTotal = 0;
 var verticalSwingDecay = 0;
 
+var horizontalTiltValue = 0;
+var horizontalTiltTotal = 0;
+var horizontalTiltDecay = 0;
+
 var horizontalSwingValue = 0;
 var horizontalSwingTotal = 0;
 var horizontalSwingDecay = 0;
+
 
 
 window.onload = function init() {
@@ -56,6 +62,14 @@ function createScene() {
     // configure renderer clear color
     renderer.setClearColor("#e4e0ba");
 
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
+        new THREE.MeshBasicMaterial({
+            opacity: 0.0,
+            transparent: true,
+            visible: false
+        }));
+    scene.add(plane);
+
     /*****************************
     * SHADOWS 
     ****************************/
@@ -72,7 +86,7 @@ function createScene() {
 function createSword() {
     var swordGeometry = new THREE.BoxGeometry(2, 100, 10);
     var swordMaterial = new THREE.MeshPhongMaterial({ color: 0xd8d0d1 });
-    var sword = new THREE.Mesh(swordGeometry, swordMaterial);
+    sword = new THREE.Mesh(swordGeometry, swordMaterial);
 
     swordPivot = new THREE.Object3D();
 
@@ -85,7 +99,9 @@ function createSword() {
     sword.receiveShadow = true;
 
     var axes = new THREE.AxisHelper(100);
+    var axesScene = new THREE.AxisHelper(100);
     swordPivot.add(axes)
+    scene.add(axesScene);
 }
 
 function handleWindowResize() {
@@ -143,20 +159,20 @@ function handleMouseDown(event) {
     if (event.shiftKey) {
         //swordPivot.rotation.z = -Math.PI/2;
 
-        if (horizontalSwingTotal >= 0 && verticalSwingTotal >= 0) {
+        if (horizontalTiltTotal >= 0 && verticalSwingTotal >= 0) {
             console.log("horizontal")
-            horizontalSwingValue = -0.25
-            horizontalSwingTotal = -0.01
-            horizontalSwingDecay = -0.02
+            horizontalTiltValue = -0.25
+            horizontalTiltTotal = -0.01
+            horizontalTiltDecay = -0.02
             //swordPivot.rotation.z += horizontalSwingTotal;
-            verticalSwingValue = -0.50
-            verticalSwingTotal = -0.75
-            verticalSwingDecay = -0.02
+            horizontalSwingValue = -0.50
+            horizontalSwingTotal = -0.75
+            horizontalSwingDecay = -0.02
         }
     }
     else {
 
-        if (verticalSwingTotal >= 0 && horizontalSwingTotal >= 0) {
+        if (verticalSwingTotal >= 0 && horizontalTiltTotal >= 0) {
             console.log("vertical")
             verticalSwingValue = -0.50
             verticalSwingTotal = -0.75
@@ -171,26 +187,36 @@ function handleMouseDown(event) {
 
 function updateSword() {
     //swordPivot.rotation.z += 0.01;
-    var targetX = mousePos.x * 100;
-    var targetY = mousePos.y * 100;
+    var targetX = mousePos.x * 200;
+    var targetY = mousePos.y * 100 + 100;
 
     // // update the airplane's position
     // plane.position.x = targetX;
     // plane.position.y = targetY + 100;
 
-    // update the sword's position SMOOTHLY
-    swordPivot.position.x += (targetX - swordPivot.position.x + 100) * 0.1;
-    swordPivot.position.y += (targetY - swordPivot.position.y + 100) * 0.1;
-    // swordPivot.rotation.z = (targetY - swordPivot.position.y + 100) * 0.013;
+    // // update the sword's position SMOOTHLY
+    // swordPivot.position.x += (targetX - swordPivot.position.x + 100) * 0.1;
+    // swordPivot.position.y += (targetY - swordPivot.position.y + 100) * 0.1;
+
+
+    swordPivot.position.x += (targetX - swordPivot.position.x) * 0.1;
+    swordPivot.position.y += (targetY - swordPivot.position.y) * 0.1;
+    console.log(targetX - swordPivot.position.x)
+
+    sword.rotation.z = (targetY - swordPivot.position.y) * 0.007;
 
     swordPivot.rotation.x += verticalSwingValue;
-    swordPivot.rotation.z += horizontalSwingValue;
+    swordPivot.rotation.z += horizontalTiltValue;
+    swordPivot.rotation.y -= horizontalSwingValue;
 
-    console.log(horizontalSwingValue + " " + swordPivot.rotation.z)
+
+    console.log(horizontalTiltValue + " " + swordPivot.rotation.z)
 
 
     verticalSwingTotal += verticalSwingValue;
     verticalSwingValue -= verticalSwingDecay;
+    horizontalTiltTotal += horizontalTiltValue;
+    horizontalTiltValue -= horizontalTiltDecay;
     horizontalSwingTotal += horizontalSwingValue;
     horizontalSwingValue -= horizontalSwingDecay;
     //console.log("value: " + horizontalSwingValue + "  total: " + horizontalSwingTotal + "    decay:" + horizontalSwingDecay)
@@ -203,11 +229,16 @@ function updateSword() {
         console.log("done")
     }
 
-    if (horizontalSwingTotal > 0) {
+    if (horizontalTiltTotal > 0) {
+        horizontalTiltTotal = 0;
+        horizontalTiltValue = 0;
+        horizontalTiltDecay = 0;
+        swordPivot.rotation.z = 0;
+
         horizontalSwingTotal = 0;
         horizontalSwingValue = 0;
         horizontalSwingDecay = 0;
-        swordPivot.rotation.z = 0;
+        swordPivot.rotation.y = 0;
         console.log("done")
     }
 
