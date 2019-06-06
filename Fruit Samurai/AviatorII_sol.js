@@ -2,6 +2,8 @@
 var scene, renderer, camera, plane;
 
 // 3D Models
+
+/** Espada  */
 var swordPivot;
 var sword;
 
@@ -17,7 +19,26 @@ var horizontalSwingValue = 0;
 var horizontalSwingTotal = 0;
 var horizontalSwingDecay = 0;
 
+/** "Jogador" */
+let jogador = {
+    vidas: 3,
+    pontos: 0
+}
 
+/** Array de Bolas */
+let balls = []
+
+/** Tempo de intervalo de lançamento das bolas */
+let intervalos = [500, 400, 300];
+let intervaloPicker = Math.floor(Math.random()*3)
+let timeCount = 0
+
+/** Game Settings (Em principio não se vai alterar estas settings\) */
+const gameSet = {
+    x_vel: 1,
+    y_vel: 1,
+    z_vel: 1
+}
 
 window.onload = function init() {
     // set up the scene, the camera and the renderer
@@ -135,15 +156,22 @@ function createLights() {
 
 function animate() {
 
-    // render
+    /** Render */
     renderer.render(scene, camera);
 
-    //update objects
+    /** update sword */
     updateSword();
 
+    /** Generate and update balls */
+    if (balls.length <= 1) {
+        timeCount++
+        if (timeCount >= intervalo) {
+            generateBalls()
+        }
+    }
+
+    /** Até te animaste te te */
     requestAnimationFrame(animate);
-
-
 }
 
 
@@ -180,9 +208,6 @@ function handleMouseDown(event) {
             // swordPivot.rotation.x += verticalSwingTotal;
         }
     }
-
-
-
 }
 
 function updateSword() {
@@ -201,7 +226,7 @@ function updateSword() {
 
     swordPivot.position.x += (targetX - swordPivot.position.x) * 0.1;
     swordPivot.position.y += (targetY - swordPivot.position.y) * 0.1;
-    console.log(targetX - swordPivot.position.x)
+    // console.log(targetX - swordPivot.position.x)
 
     sword.rotation.z = (targetY - swordPivot.position.y) * 0.007;
 
@@ -210,7 +235,7 @@ function updateSword() {
     swordPivot.rotation.y -= horizontalSwingValue;
 
 
-    console.log(horizontalTiltValue + " " + swordPivot.rotation.z)
+    // console.log(horizontalTiltValue + " " + swordPivot.rotation.z)
 
 
     verticalSwingTotal += verticalSwingValue;
@@ -244,5 +269,28 @@ function updateSword() {
 
 }
 
+function generateBalls() {
+    /** Criar aqui as bolas, mas mover-las no updateBalls, usar array "global" */
+    /** Construir a bola */
+    if (balls.length < 3) {
+        let r = Math.round(Math.random() * 4 + 2), widthSegments = 32, heightSegments = 32
+        let materialProp = { color: 0x0000ff }
+        let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
+        let mesh = new THREE.MeshBasicMaterial(materialProp)
+        let ball = new THREE.Mesh(geometry, mesh)
 
+        balls.push(ball)
+        scene.add(ball)
+        /** Escolher um intervalo diferente */
+        timeCount = 0
+        intervaloPicker = Math.floor(Math.random()*3)
+    }
+}
 
+function updateBalls() {
+    if (balls.length > 0) {
+        for (let i = 0; i < balls.length; i++) {
+            balls[i].position
+        }
+    }
+}
