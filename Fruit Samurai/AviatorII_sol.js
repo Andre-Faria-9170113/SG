@@ -19,6 +19,11 @@ var horizontalSwingValue = 0;
 var horizontalSwingTotal = 0;
 var horizontalSwingDecay = 0;
 
+//Guias Cortes
+var verticalSwingGuide;
+var horizontalSwingGuide;
+// var verticalSwingGuide;
+
 /** "Jogador" */
 let jogador = {
     vidas: 3,
@@ -27,10 +32,13 @@ let jogador = {
 
 /** Array de Bolas */
 let balls = []
+let grav = -0.01;
 
 /** Tempo de intervalo de lançamento das bolas */
 let intervalos = [500, 400, 300];
-let intervaloPicker = Math.floor(Math.random()*3)
+
+//gerar intervalo 1ª bola
+let intervalo = intervalos[Math.floor(Math.random() * 3)];
 let timeCount = 0
 
 /** Game Settings (Em principio não se vai alterar estas settings\) */
@@ -53,6 +61,8 @@ window.onload = function init() {
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('mousedown', handleMouseDown, false);
+    document.addEventListener('keydown', handleKeyDown, false);
+    document.addEventListener('keyup', handleKeyUp, false);
 
     // start a loop that will update the objects' positions 
     // and render the scene on each frame
@@ -116,6 +126,49 @@ function createSword() {
     sword.position.y += 20;
     swordPivot.position.set(0, 0, 0);
 
+    //guia de corte vertical
+    var curveVertical = new THREE.EllipseCurve(
+        0, 0,            // ax, aY
+        80, 80,           // xRadius, yRadius
+        1, Math.PI,  // aStartAngle, aEndAngle
+        false,            // aClockwise
+        -Math.PI/2                 // aRotation
+    );
+
+    var pointsVertical = curveVertical.getPoints(50);
+    var geometryVertical = new THREE.BufferGeometry().setFromPoints(pointsVertical);
+
+    var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+    // Create the final object to add to the scene
+    verticalSwingGuide = new THREE.Line(geometryVertical, material);
+
+    swordPivot.add(verticalSwingGuide);
+    verticalSwingGuide.rotation.y = Math.PI/2
+
+    
+    
+    //guia de corte horizontal
+    var curveHorizontal = new THREE.EllipseCurve(
+        0, 0    ,            // ax, aY
+        80, 80,           // xRadius, yRadius
+        1, Math.PI,  // aStartAngle, aEndAngle
+        false,            // aClockwise
+        0                // aRotation
+    );
+
+    var pointsHorizontal = curveHorizontal.getPoints(50);
+    var geometryHorizontal = new THREE.BufferGeometry().setFromPoints(pointsHorizontal);
+
+    var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+    // Create the final object to add to the scene
+    horizontalSwingGuide = new THREE.Line(geometryHorizontal, material);
+
+    swordPivot.add(horizontalSwingGuide);
+    horizontalSwingGuide.rotation.x = -Math.PI/2
+    horizontalSwingGuide.visible= false;
+
     sword.castShadow = true;
     sword.receiveShadow = true;
 
@@ -170,6 +223,8 @@ function animate() {
         }
     }
 
+    updateBalls();
+
     /** Até te animaste te te */
     requestAnimationFrame(animate);
 }
@@ -207,6 +262,19 @@ function handleMouseDown(event) {
             verticalSwingDecay = -0.02
             // swordPivot.rotation.x += verticalSwingTotal;
         }
+    }
+}
+function handleKeyDown(event) {
+    if(event.keyCode == "16"){
+        verticalSwingGuide.visible = false;
+        horizontalSwingGuide.visible = true;
+    }
+}
+
+function handleKeyUp(event) {
+    if(event.keyCode == "16"){
+        verticalSwingGuide.visible = true;
+        horizontalSwingGuide.visible = false;
     }
 }
 
@@ -279,18 +347,26 @@ function generateBalls() {
         let mesh = new THREE.MeshBasicMaterial(materialProp)
         let ball = new THREE.Mesh(geometry, mesh)
 
+        ball.vx = Math.random() * 6 - 3;
+        ball.vy = Math.random() + 0.5;
+
         balls.push(ball)
         scene.add(ball)
+
+        console.log("added Ball " + balls.length + "")
         /** Escolher um intervalo diferente */
         timeCount = 0
-        intervaloPicker = Math.floor(Math.random()*3)
+        intervalo = intervalos[Math.floor(Math.random() * 3)]
     }
 }
 
 function updateBalls() {
     if (balls.length > 0) {
         for (let i = 0; i < balls.length; i++) {
-            balls[i].position
+            balls[i].position.y += balls[i].vy;
+            balls[i].vy += grav;
+
+            balls[i].position.x += balls[i].vx;
         }
     }
 }
