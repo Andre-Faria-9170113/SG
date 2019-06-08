@@ -61,8 +61,9 @@ window.onload = function init() {
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('mousedown', handleMouseDown, false);
-    document.addEventListener('keydown', handleKeyDown, false);
-    document.addEventListener('keyup', handleKeyUp, false);
+    document.addEventListener('mouseup', handleMouseUp, false);
+    // document.addEventListener('keydown', handleKeyDown, false);
+    // document.addEventListener('keyup', handleKeyUp, false);
 
     // start a loop that will update the objects' positions 
     // and render the scene on each frame
@@ -127,47 +128,31 @@ function createSword() {
     swordPivot.position.set(0, 0, 0);
 
     //guia de corte vertical
-    var curveVertical = new THREE.EllipseCurve(
-        0, 0,            // ax, aY
-        80, 80,           // xRadius, yRadius
-        1, Math.PI,  // aStartAngle, aEndAngle
-        false,            // aClockwise
-        -Math.PI/2                 // aRotation
-    );
+    var geometryVertical = new THREE.CylinderGeometry(70, 70, 1, 32, 1.5, false, -Math.PI / 2, -Math.PI);
 
-    var pointsVertical = curveVertical.getPoints(50);
-    var geometryVertical = new THREE.BufferGeometry().setFromPoints(pointsVertical);
-
-    var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+    var swingGuideMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    swingGuideMaterial.transparent = true;
+    swingGuideMaterial.opacity = 0.5;
 
     // Create the final object to add to the scene
-    verticalSwingGuide = new THREE.Line(geometryVertical, material);
+    verticalSwingGuide = new THREE.Mesh(geometryVertical, swingGuideMaterial);
+    verticalSwingGuide.visible = false;
 
     swordPivot.add(verticalSwingGuide);
-    verticalSwingGuide.rotation.y = Math.PI/2
+    verticalSwingGuide.rotation.z = Math.PI / 2
 
-    
-    
+
+
     //guia de corte horizontal
-    var curveHorizontal = new THREE.EllipseCurve(
-        0, 0    ,            // ax, aY
-        80, 80,           // xRadius, yRadius
-        1, Math.PI,  // aStartAngle, aEndAngle
-        false,            // aClockwise
-        0                // aRotation
-    );
-
-    var pointsHorizontal = curveHorizontal.getPoints(50);
-    var geometryHorizontal = new THREE.BufferGeometry().setFromPoints(pointsHorizontal);
-
-    var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+    var geometryHorizontal = new THREE.CylinderGeometry(70, 70, 1, 32, 1.5, false, -Math.PI / 2, -Math.PI);
 
     // Create the final object to add to the scene
-    horizontalSwingGuide = new THREE.Line(geometryHorizontal, material);
+    horizontalSwingGuide = new THREE.Mesh(geometryHorizontal, swingGuideMaterial);
+    horizontalSwingGuide.visible = false;
 
     swordPivot.add(horizontalSwingGuide);
-    horizontalSwingGuide.rotation.x = -Math.PI/2
-    horizontalSwingGuide.visible= false;
+
+
 
     sword.castShadow = true;
     sword.receiveShadow = true;
@@ -238,54 +223,78 @@ function handleMouseMove(event) {
     var ty = 1 - (event.clientY / window.innerHeight) * 2;
     mousePos = { x: tx, y: ty };
 }
-function handleMouseDown(event) {
+function handleMouseUp(event) {
     if (event.shiftKey) {
         //swordPivot.rotation.z = -Math.PI/2;
 
         if (horizontalTiltTotal >= 0 && verticalSwingTotal >= 0) {
-            console.log("horizontal")
-            horizontalTiltValue = -0.25
-            horizontalTiltTotal = -0.01
-            horizontalTiltDecay = -0.02
-            //swordPivot.rotation.z += horizontalSwingTotal;
-            horizontalSwingValue = -0.50
-            horizontalSwingTotal = -0.75
-            horizontalSwingDecay = -0.02
+            if (horizontalSwingGuide.visible) {
+                console.log("horizontal")
+                horizontalTiltValue = -0.25
+                horizontalTiltTotal = -0.01
+                horizontalTiltDecay = -0.02
+                //swordPivot.rotation.z += horizontalSwingTotal;
+                horizontalSwingValue = -0.50
+                horizontalSwingTotal = -0.75
+                horizontalSwingDecay = -0.02
+
+                horizontalSwingGuide.visible = false;
+                verticalSwingGuide.visible = false;
+            }
+
         }
     }
     else {
 
         if (verticalSwingTotal >= 0 && horizontalTiltTotal >= 0) {
-            console.log("vertical")
-            verticalSwingValue = -0.50
-            verticalSwingTotal = -0.75
-            verticalSwingDecay = -0.02
-            // swordPivot.rotation.x += verticalSwingTotal;
+            if (verticalSwingGuide.visible) {
+                console.log("vertical")
+                verticalSwingValue = -0.50
+                verticalSwingTotal = -0.75
+                verticalSwingDecay = -0.02
+                // swordPivot.rotation.x += verticalSwingTotal;
+
+                horizontalSwingGuide.visible = false;
+                verticalSwingGuide.visible = false;
+            }
+
         }
     }
 }
-function handleKeyDown(event) {
-    if(event.keyCode == "16"){
-        verticalSwingGuide.visible = false;
-        horizontalSwingGuide.visible = true;
+
+function handleMouseDown(event) {
+    if (verticalSwingTotal >= 0 && horizontalSwingTotal >= 0) {
+        if (event.shiftKey) {
+            horizontalSwingGuide.visible = true;
+            verticalSwingGuide.visible = false;
+        }
+        else {
+            horizontalSwingGuide.visible = false;
+            verticalSwingGuide.visible = true;
+        }
     }
+
 }
 
-function handleKeyUp(event) {
-    if(event.keyCode == "16"){
-        verticalSwingGuide.visible = true;
-        horizontalSwingGuide.visible = false;
-    }
-}
+// function handleKeyDown(event) {
+//     if(event.keyCode == "16"){
+//         verticalSwingGuide.visible = false;
+//         horizontalSwingGuide.visible = true;
+//     }
+// }
+
+// function handleKeyUp(event) {
+//     if(event.keyCode == "16"){
+//         verticalSwingGuide.visible = true;
+//         horizontalSwingGuide.visible = false;
+//     }
+// }
 
 function updateSword() {
     //swordPivot.rotation.z += 0.01;
     var targetX = mousePos.x * 200;
     var targetY = mousePos.y * 100 + 100;
 
-    // // update the airplane's position
-    // plane.position.x = targetX;
-    // plane.position.y = targetY + 100;
 
     // // update the sword's position SMOOTHLY
     // swordPivot.position.x += (targetX - swordPivot.position.x + 100) * 0.1;
@@ -319,6 +328,9 @@ function updateSword() {
         verticalSwingValue = 0;
         verticalSwingDecay = 0;
         swordPivot.rotation.x = 0;
+
+        horizontalSwingGuide.visible = false;
+        verticalSwingGuide.visible = false;
         console.log("done")
     }
 
@@ -332,8 +344,18 @@ function updateSword() {
         horizontalSwingValue = 0;
         horizontalSwingDecay = 0;
         swordPivot.rotation.y = 0;
+
+        horizontalSwingGuide.visible = false;
+        verticalSwingGuide.visible = false;
         console.log("done")
     }
+
+    //DISABLE SWING GUIDES WHILE SWINGING
+    // if(horizontalSwingTotal == 0 && verticalSwingTotal == 0){
+    //     //horizontalSwingGuide.visible = true;
+    //     verticalSwingGuide.visible = true;
+    // }
+
 
 }
 
