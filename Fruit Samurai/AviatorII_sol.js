@@ -51,6 +51,10 @@ const gameSet = {
     z_vel: 1
 }
 
+//variáveis controlos 
+let mousedown = false;
+let shiftKey = false;
+
 window.onload = function init() {
     // set up the scene, the camera and the renderer
     createScene();
@@ -65,8 +69,8 @@ window.onload = function init() {
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('mousedown', handleMouseDown, false);
     document.addEventListener('mouseup', handleMouseUp, false);
-    // document.addEventListener('keydown', handleKeyDown, false);
-    // document.addEventListener('keyup', handleKeyUp, false);
+    document.addEventListener('keydown', handleKeyDown, false);
+    document.addEventListener('keyup', handleKeyUp, false);
 
     // start a loop that will update the objects' positions 
     // and render the scene on each frame
@@ -213,6 +217,24 @@ function animate() {
         }
 
         updateBalls();
+
+        if(mousedown == true && shiftKey == true){
+            horizontalSwingGuide.visible = true;
+            verticalSwingGuide.visible = false;
+        }
+        else if(mousedown == true && shiftKey == false){
+            horizontalSwingGuide.visible = false;
+            verticalSwingGuide.visible = true;
+        }
+        else if(mousedown == false && shiftKey == false){
+            horizontalSwingGuide.visible = false;
+            verticalSwingGuide.visible = false;
+        }
+
+        if(horizontalSwingTotal != 0 || verticalSwingTotal != 0){
+            verticalSwingGuide.visible = false;
+            horizontalSwingGuide.visible = false;
+        }
     }
     else {
         /** Criar um ecrã de fim de jogo */
@@ -247,8 +269,9 @@ function handleMouseUp(event) {
                 horizontalSwingTotal = -0.75
                 horizontalSwingDecay = -0.02
 
-                horizontalSwingGuide.visible = false;
-                verticalSwingGuide.visible = false;
+                // horizontalSwingGuide.visible = false;
+                // verticalSwingGuide.visible = false;
+                mousedown = false;
             }
 
         }
@@ -263,8 +286,9 @@ function handleMouseUp(event) {
                 verticalSwingDecay = -0.02
                 // swordPivot.rotation.x += verticalSwingTotal;
 
-                horizontalSwingGuide.visible = false;
-                verticalSwingGuide.visible = false;
+                // horizontalSwingGuide.visible = false;
+                // verticalSwingGuide.visible = false;
+                mousedown = false;
             }
 
         }
@@ -273,31 +297,34 @@ function handleMouseUp(event) {
 
 function handleMouseDown(event) {
     if (verticalSwingTotal >= 0 && horizontalSwingTotal >= 0) {
-        if (event.shiftKey) {
-            horizontalSwingGuide.visible = true;
-            verticalSwingGuide.visible = false;
-        }
-        else {
-            horizontalSwingGuide.visible = false;
-            verticalSwingGuide.visible = true;
-        }
+        // if (event.shiftKey) {
+        //     // horizontalSwingGuide.visible = true;
+        //     // verticalSwingGuide.visible = false;
+        //     mousedown 
+        // }
+        // else {
+        //     horizontalSwingGuide.visible = false;
+        //     verticalSwingGuide.visible = true;
+        // }
+        mousedown = true;
     }
 
 }
 
-// function handleKeyDown(event) {
-//     if(event.keyCode == "16"){
-//         verticalSwingGuide.visible = false;
-//         horizontalSwingGuide.visible = true;
-//     }
-// }
+function handleKeyDown(event) {
+    if(event.keyCode == "16"){
+        // verticalSwingGuide.visible = false;
+        // horizontalSwingGuide.visible = true;
+        shiftKey = true;
+    }
+}
 
-// function handleKeyUp(event) {
-//     if(event.keyCode == "16"){
-//         verticalSwingGuide.visible = true;
-//         horizontalSwingGuide.visible = false;
-//     }
-// }
+function handleKeyUp(event) {
+    if(event.keyCode == "16"){
+        // horizontalSwingGuide.visible = false;
+        shiftKey = false;
+    }
+}
 
 function updateSword() {
     //swordPivot.rotation.z += 0.01;
