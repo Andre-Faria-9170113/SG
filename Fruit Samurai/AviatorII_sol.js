@@ -30,6 +30,9 @@ let jogador = {
     pontos: 0
 }
 
+/** Variável global para dizer se o jogo acabou ou não */
+let fini = false
+
 /** Array de Bolas */
 let balls = []
 let grav = -0.01;
@@ -200,15 +203,21 @@ function animate() {
     /** update sword */
     updateSword();
 
-    /** Generate and update balls */
-    if (balls.length <= 1) {
-        timeCount++
-        if (timeCount >= intervalo) {
-            generateBalls()
+    if (!fini) {
+        /** Generate and update balls */
+        if (balls.length <= 1) {
+            timeCount++
+            if (timeCount >= intervalo) {
+                generateBalls()
+            }
         }
-    }
 
-    updateBalls();
+        updateBalls();
+    }
+    else {
+        /** Criar um ecrã de fim de jogo */
+
+    }
 
     /** Até te animaste te te */
     requestAnimationFrame(animate);
@@ -359,10 +368,12 @@ function updateSword() {
 
 }
 
-function generateBalls() {
-    /** Criar aqui as bolas, mas mover-las no updateBalls, usar array "global" */
-    /** Construir a bola */
+function generateBalls() {  
     if (balls.length < 3) {
+        /** Visto que estamos a fazer raios diferentes, 
+         * então os pontos vão ser calculados consoante 
+         * o raio das bolas.
+         */
         let r = Math.round(Math.random() * 4 + 2), widthSegments = 32, heightSegments = 32
         let materialProp = { color: 0x0000ff }
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
@@ -389,6 +400,29 @@ function updateBalls() {
             balls[i].vy += grav;
 
             balls[i].position.x += balls[i].vx;
+            colision(balls[i])
+            if (balls[i].position.y <= -3 || balls[i].position.x > 150 || balls[i].position.x < -150) {
+                console.log(balls[i], balls[i].geometry.parameters.radius)
+                scene.remove(balls[i])
+                balls.splice(i, 1)
+
+                /** retirar vidas
+                 * porque se está a ser eliminada assim é porque 
+                 * o jogador não lhe acertou
+                 */
+                jogador.vidas--
+                console.log(jogador)
+                if (jogador.vidas < 0) {
+                    console.log("Até te morreste te")
+                    fini = true
+                }
+            }
         }
     }
+}
+
+function colision (ball) {
+    let colide = false
+    console.log(sword)
+    return colide;
 }
