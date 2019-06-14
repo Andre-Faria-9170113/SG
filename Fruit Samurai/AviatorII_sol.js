@@ -19,16 +19,13 @@ var horizontalSwingValue = 0;
 var horizontalSwingTotal = 0;
 var horizontalSwingDecay = 0;
 
-
-
-
-
-
-
 //Guias Cortes
 var verticalSwingGuide;
 var horizontalSwingGuide;
-// var verticalSwingGuide;
+var verticalSwingGuide;
+
+/** Total de balas */
+let totalBalls = 5;
 
 /** "Jogador" */
 let jogador = {
@@ -41,10 +38,13 @@ let fini = false
 
 /** Array de Bolas */
 let balls = []
+/** Array de bolas cortadas */
+let cutBalls = []
+
 let grav = -0.01;
 
 /** Tempo de intervalo de lançamento das bolas */
-let intervalos = [500, 400, 300];
+let intervalos = [200, 150, 100];
 
 //gerar intervalo 1ª bola
 let intervalo = intervalos[Math.floor(Math.random() * 3)];
@@ -134,7 +134,7 @@ function createSword() {
     sword = new THREE.Mesh(swordGeometry, swordMaterial);
 
     swordBBox = new THREE.Box3().setFromObject(sword);
-    
+
 
     swordPivot = new THREE.Object3D();
 
@@ -213,11 +213,11 @@ function animate() {
     /** Render */
     renderer.render(scene, camera);
 
-    
+
 
     /** update sword */
     updateSword();
-    swordBBox =  new THREE.Box3().setFromObject(sword);
+    swordBBox = new THREE.Box3().setFromObject(sword);
 
     if (!fini) {
         /** Generate and update balls */
@@ -229,19 +229,21 @@ function animate() {
         }
 
         updateBalls();
-        for(let i = 0; i< balls.length; i++){
-            let BBox =  new THREE.Box3().setFromObject(balls[i]);
+        for (let i = 0; i < balls.length; i++) {
+            let BBox = new THREE.Box3().setFromObject(balls[i]);
             var collision = BBox.intersectsBox(swordBBox);
-            if(collision){
-               balls[i].material.color.setRGB(1,0,0);
-              //console.log(balls[i].material) 
+            if (collision) {
+                balls[i].material.color.setRGB(1, 0, 0);
+                let rmBall = balls.splice(i, 1)
+                cutBalls.push(rmBall[0])
+                //console.log(balls[i].material) 
             }
-            else{
-                balls[i].material.color.setRGB(0,0,1);
+            else {
+                balls[i].material.color.setRGB(0, 0, 1);
             }
             console.log(collision)
         }
-
+        updateCutBalls()
 
 
         if (mousedown == true && shiftKey == true) {
@@ -422,7 +424,7 @@ function updateSword() {
 }
 
 function generateBalls() {
-    if (balls.length < 3) {
+    if (balls.length < totalBalls) {
         /** Visto que estamos a fazer raios diferentes, 
          * então os pontos vão ser calculados consoante 
          * o raio das bolas.
@@ -433,10 +435,12 @@ function generateBalls() {
         let mesh = new THREE.MeshBasicMaterial(materialProp)
         let ball = new THREE.Mesh(geometry, mesh)
 
-        
 
-        ball.vx = Math.random() * 6 - 3;
-        ball.vy = Math.random() + 0.5;
+
+        ball.vx = Math.floor(Math.random() * 6 - 3);
+        ball.vy = Math.ceil(Math.random() + 0.5);
+
+        ball.position.set(Math.floor(Math.random() * 100 - 50), -2, 3)
 
         balls.push(ball)
         scene.add(ball)
@@ -455,9 +459,8 @@ function updateBalls() {
             balls[i].vy += grav;
 
             balls[i].position.x += balls[i].vx;
-            colision(balls[i])
             if (balls[i].position.y <= -3 || balls[i].position.x > 150 || balls[i].position.x < -150) {
-               // console.log(balls[i], balls[i].geometry.parameters.radius)
+                // console.log(balls[i], balls[i].geometry.parameters.radius)
                 scene.remove(balls[i])
                 balls.splice(i, 1)
 
@@ -475,9 +478,19 @@ function updateBalls() {
         }
     }
 }
+function updateCutBalls() {
+    if (cutBalls.length > 0) {
+        for (let i = 0; i < cutBalls.length; i++) {
+            console.log(cutBalls[i])
+            cutBalls[i].position.y += cutBalls[i].vy;
+            cutBalls[i].vy += grav;
 
-function colision(ball) {
-    let colide = false
-    //console.log(sword)
-    return colide;
+            cutBalls[i].position.x += cutBalls[i].vx;
+            if (cutBalls[i].position.y <= -3 || cutBalls[i].position.x > 150 || cutBalls[i].position.x < -150) {
+                // console.log(balls[i], balls[i].geometry.parameters.radius)
+                scene.remove(cutBalls[i])
+                cutBalls.splice(i, 1)
+            }
+        }
+    }
 }
