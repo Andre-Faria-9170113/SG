@@ -19,6 +19,12 @@ var horizontalSwingValue = 0;
 var horizontalSwingTotal = 0;
 var horizontalSwingDecay = 0;
 
+
+
+
+
+
+
 //Guias Cortes
 var verticalSwingGuide;
 var horizontalSwingGuide;
@@ -127,6 +133,9 @@ function createSword() {
     var swordMaterial = new THREE.MeshPhongMaterial({ color: 0xd8d0d1 });
     sword = new THREE.Mesh(swordGeometry, swordMaterial);
 
+    swordBBox = new THREE.Box3().setFromObject(sword);
+    
+
     swordPivot = new THREE.Object3D();
 
     swordPivot.add(sword);
@@ -204,8 +213,11 @@ function animate() {
     /** Render */
     renderer.render(scene, camera);
 
+    
+
     /** update sword */
     updateSword();
+    swordBBox =  new THREE.Box3().setFromObject(sword);
 
     if (!fini) {
         /** Generate and update balls */
@@ -217,21 +229,35 @@ function animate() {
         }
 
         updateBalls();
+        for(let i = 0; i< balls.length; i++){
+            let BBox =  new THREE.Box3().setFromObject(balls[i]);
+            var collision = BBox.intersectsBox(swordBBox);
+            if(collision){
+               balls[i].material.color.setRGB(1,0,0);
+              //console.log(balls[i].material) 
+            }
+            else{
+                balls[i].material.color.setRGB(0,0,1);
+            }
+            console.log(collision)
+        }
 
-        if(mousedown == true && shiftKey == true){
+
+
+        if (mousedown == true && shiftKey == true) {
             horizontalSwingGuide.visible = true;
             verticalSwingGuide.visible = false;
         }
-        else if(mousedown == true && shiftKey == false){
+        else if (mousedown == true && shiftKey == false) {
             horizontalSwingGuide.visible = false;
             verticalSwingGuide.visible = true;
         }
-        else if(mousedown == false && shiftKey == false){
+        else if (mousedown == false && shiftKey == false) {
             horizontalSwingGuide.visible = false;
             verticalSwingGuide.visible = false;
         }
 
-        if(horizontalSwingTotal != 0 || verticalSwingTotal != 0){
+        if (horizontalSwingTotal != 0 || verticalSwingTotal != 0) {
             verticalSwingGuide.visible = false;
             horizontalSwingGuide.visible = false;
         }
@@ -312,7 +338,7 @@ function handleMouseDown(event) {
 }
 
 function handleKeyDown(event) {
-    if(event.keyCode == "16"){
+    if (event.keyCode == "16") {
         // verticalSwingGuide.visible = false;
         // horizontalSwingGuide.visible = true;
         shiftKey = true;
@@ -320,7 +346,7 @@ function handleKeyDown(event) {
 }
 
 function handleKeyUp(event) {
-    if(event.keyCode == "16"){
+    if (event.keyCode == "16") {
         // horizontalSwingGuide.visible = false;
         shiftKey = false;
     }
@@ -395,7 +421,7 @@ function updateSword() {
 
 }
 
-function generateBalls() {  
+function generateBalls() {
     if (balls.length < 3) {
         /** Visto que estamos a fazer raios diferentes, 
          * então os pontos vão ser calculados consoante 
@@ -406,6 +432,8 @@ function generateBalls() {
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
         let mesh = new THREE.MeshBasicMaterial(materialProp)
         let ball = new THREE.Mesh(geometry, mesh)
+
+        
 
         ball.vx = Math.random() * 6 - 3;
         ball.vy = Math.random() + 0.5;
@@ -429,7 +457,7 @@ function updateBalls() {
             balls[i].position.x += balls[i].vx;
             colision(balls[i])
             if (balls[i].position.y <= -3 || balls[i].position.x > 150 || balls[i].position.x < -150) {
-                console.log(balls[i], balls[i].geometry.parameters.radius)
+               // console.log(balls[i], balls[i].geometry.parameters.radius)
                 scene.remove(balls[i])
                 balls.splice(i, 1)
 
@@ -438,7 +466,7 @@ function updateBalls() {
                  * o jogador não lhe acertou
                  */
                 jogador.vidas--
-                console.log(jogador)
+                //console.log(jogador)
                 if (jogador.vidas < 0) {
                     console.log("Até te morreste te")
                     fini = true
@@ -448,8 +476,8 @@ function updateBalls() {
     }
 }
 
-function colision (ball) {
+function colision(ball) {
     let colide = false
-    console.log(sword)
+    //console.log(sword)
     return colide;
 }
