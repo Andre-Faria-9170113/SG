@@ -33,6 +33,8 @@ let jogador = {
     pontos: 0
 }
 
+let killBall = false
+
 /** Variável global para dizer se o jogo acabou ou não */
 let fini = false
 
@@ -232,7 +234,7 @@ function animate() {
         for (let i = 0; i < balls.length; i++) {
             let BBox = new THREE.Box3().setFromObject(balls[i]);
             var collision = BBox.intersectsBox(swordBBox);
-            if (collision) {
+            if (collision == true && killBall == true) {
                 balls[i].material.color.setRGB(1, 0, 0);
                 let rmBall = balls.splice(i, 1)
                 cutBalls.push(rmBall[0])
@@ -270,6 +272,7 @@ function animate() {
     }
 
     /** Até te animaste te te */
+    kilBall = false
     requestAnimationFrame(animate);
 }
 
@@ -292,6 +295,8 @@ function handleMouseUp(event) {
                 horizontalTiltValue = -0.25
                 horizontalTiltTotal = -0.01
                 horizontalTiltDecay = -0.02
+                killBall = true
+
                 //swordPivot.rotation.z += horizontalSwingTotal;
                 horizontalSwingValue = -0.50
                 horizontalSwingTotal = -0.75
@@ -312,6 +317,8 @@ function handleMouseUp(event) {
                 verticalSwingValue = -0.50
                 verticalSwingTotal = -0.75
                 verticalSwingDecay = -0.02
+                killBall = true
+
                 // swordPivot.rotation.x += verticalSwingTotal;
 
                 // horizontalSwingGuide.visible = false;
@@ -395,6 +402,7 @@ function updateSword() {
 
         horizontalSwingGuide.visible = false;
         verticalSwingGuide.visible = false;
+        killBall = false
         console.log("done")
     }
 
@@ -411,6 +419,7 @@ function updateSword() {
 
         horizontalSwingGuide.visible = false;
         verticalSwingGuide.visible = false;
+        killBall = false
         console.log("done")
     }
 
@@ -481,7 +490,7 @@ function updateBalls() {
 function updateCutBalls() {
     if (cutBalls.length > 0) {
         for (let i = 0; i < cutBalls.length; i++) {
-            console.log(cutBalls[i])
+            // console.log(cutBalls[i])
             cutBalls[i].position.y += cutBalls[i].vy;
             cutBalls[i].vy += grav;
 
