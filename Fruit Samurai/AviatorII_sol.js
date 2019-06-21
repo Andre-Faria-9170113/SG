@@ -33,6 +33,8 @@ let jogador = {
     pontos: 0
 }
 
+// Tentar usar os stats
+
 let killBall = false
 
 /** Variável global para dizer se o jogo acabou ou não */
@@ -42,6 +44,10 @@ let fini = false
 let balls = []
 /** Array de bolas cortadas */
 let cutBalls = []
+/** Array com as particulas,
+ * Vai se dar push de X particulas ao "estourar" as bolas
+ */
+let particles = []
 
 let grav = -0.01;
 
@@ -236,8 +242,13 @@ function animate() {
             var collision = BBox.intersectsBox(swordBBox);
             if (collision == true && killBall == true) {
                 balls[i].material.color.setRGB(1, 0, 0);
-                let rmBall = balls.splice(i, 1)
-                cutBalls.push(rmBall[0])
+                let rmBall = balls.splice(i, 1)[0]
+                console.log(rmBall.position, "Leposition")
+                cutBalls.push(rmBall)
+                for (let i = 0; i<3; i++){
+                    //Como saber se é vertical swing or horizontal
+                    particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, true, scene))
+                }
                 //console.log(balls[i].material) 
             }
             else {
@@ -246,7 +257,13 @@ function animate() {
             console.log(collision)
         }
         updateCutBalls()
-
+        if(particles.length > 0) {
+            for(let p of particles) {
+                console.log(p, "Isto devia ser uma particula!!!!!")
+                p.show()
+                p.move()
+            }
+        }
 
         if (mousedown == true && shiftKey == true) {
             horizontalSwingGuide.visible = true;
