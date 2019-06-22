@@ -69,6 +69,8 @@ const gameSet = {
 let mousedown = false;
 let shiftKey = false;
 
+let vertical = true
+
 window.onload = function init() {
     // set up the scene, the camera and the renderer
     createScene();
@@ -269,11 +271,11 @@ function animate() {
                 let rmBall = balls.splice(i, 1)[0]
                 console.log(rmBall.position, "Leposition")
                 
-                for (let j = 0; j < 7; j++) {
+                for (let j = 0; j < 30; j++) {
                     //Como saber se é vertical swing or horizontal
-                    particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, true, scene))
+                    particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, vertical, scene))
                 }
-                //console.log(balls[i].material) 
+                console.log(particles, "O ARray de particulas!!!!!") 
             }
             else {
                 balls[i].material.color.setRGB(0, 0, 1);
@@ -285,7 +287,10 @@ function animate() {
             for (let i = 0; i < particles.length; i++) {
                 particles[i].show()
                 particles[i].move()
-                if (particles[i].remove()) particles.splice(i, 1)
+                if(particles[i].remove()) {
+                    console.log(particles[i], "Removida")
+                    particles.splice(i, 1)
+                }
             }
         }
 
@@ -345,6 +350,7 @@ function handleMouseUp(event) {
 
                 // horizontalSwingGuide.visible = false;
                 // verticalSwingGuide.visible = false;
+                vertical = false
                 mousedown = false;
             }
 
@@ -359,7 +365,7 @@ function handleMouseUp(event) {
                 verticalSwingTotal = -0.75
                 verticalSwingDecay = -0.02
                 killBall = true
-
+                vertical = true
                 // swordPivot.rotation.x += verticalSwingTotal;
 
                 // horizontalSwingGuide.visible = false;

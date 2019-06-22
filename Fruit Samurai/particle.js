@@ -1,6 +1,6 @@
 class Particle {
     constructor(x, y, z, vertical, scene) {
-        this.r = 2 // Mudar em principio
+        this.r = 0.5 // Mudar em principio
         /** Posição */
         this.x = x
         this.y = y
@@ -10,17 +10,23 @@ class Particle {
          * 
          * 
          */
-        this.lifeSpan = 50
+        this.lifeSpan = 20
 
         /** Velocidades */
-        this.vx = Math.round(Math.random() * 2 - 1) / 100 + 0.6
-        this.vy = Math.round(Math.random() * 2 - 1) / 100 * - 1 + 0.6
+        this.vx = Math.random() * 2 - 1/ 100 + 0.6
+        this.vy = Math.random() * (-3) + 1/ 100 - 0.6
         /** Esta velocidade vai ser sempre a mesma e constante */
-        this.vz = -3
+        this.vz = -4
 
-        if(vertical) {
+        if (Math.random() > 0.5) this.vx *= -1
+
+        if (vertical) {
             console.log("Mandar particulas por corte na vertical")
-            
+            this.vy -= 3
+        }
+        else {
+            console.log("Mandar particulas por corte na Horizontal!!!!!")
+            this.vx = this.vx * (-1) - 5
         }
         // let change = Math.round()
         /** Construir a bola */
@@ -33,7 +39,7 @@ class Particle {
     }
 
     show() {
-        
+
         this.lifeSpan -= 1
     }
 
@@ -42,13 +48,13 @@ class Particle {
         this.particle.position.y += this.vy
         this.particle.position.z += this.vz
 
-        if(this.vx > 0) this.vx -= 0.03
-        if(this.vy > 0) this.vy -= 0.03
-        if(this.vz > 0) this.vz -= 0.03
+        if (this.vx > 0) this.vx -= 0.03
+        if (this.vy > 0) this.vy -= 0.03
+        if (this.vz > 0) this.vz -= 0.03
     }
 
     remove() {
-        if(this.lifeSpan <= 0) {
+        if (this.lifeSpan <= 0) {
             scene.remove(this.particle)
             return true
         }
