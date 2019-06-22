@@ -243,13 +243,11 @@ function animate() {
             if (collision == true && killBall == true) {
                 balls[i].material.color.setRGB(1, 0, 0);
                 let rmBall = balls.splice(i, 1)[0]
-                
                 console.log(rmBall.position, "Leposition")
                 cutBalls.push(rmBall)
-                for (let i = 0; i<7; i++){
+                for (let j = 0; j<3; j++){
                     //Como saber se é vertical swing or horizontal
                     particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, true, scene))
-                    console.log(particles[i], "particles")
                 }
                 //console.log(balls[i].material) 
             }
@@ -261,10 +259,7 @@ function animate() {
         updateCutBalls()
         if(particles.length > 0) {
             for(let p of particles) {
-                // console.log(p, "Isto devia ser uma particula!!!!!")
-                if(p.lifeSpan <= 0) {
-                    p.remove()
-                }
+                console.log(p, "Isto devia ser uma particula!!!!!")
                 p.show()
                 p.move()
             }
