@@ -243,12 +243,21 @@ function animate() {
             let BBox = new THREE.Box3().setFromObject(balls[i]);
             var collision = BBox.intersectsBox(swordBBox);
             if (collision == true && killBall == true) {
-                //GERAR DUAS METADES DA BOLA ORIGINAL
+                //GERAR DUAS METADES DA BOLA ORIGINAL CONFORME O CORTE
                 let r = balls[i].radius
+
+                let geometry1;
+                let geometry2;
+                if (vertical) {
+                    geometry1 = new THREE.SphereGeometry(r, 32, 32, Math.PI / 2, Math.PI)
+                    geometry2 = new THREE.SphereGeometry(r, 32, 32, 3 * Math.PI / 2, Math.PI)
+                }
+                else {
+                    geometry1 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI*2, 0, Math.PI/2)
+                    geometry2 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI*2, Math.PI/2, Math.PI/2)
+                }
                 
-                let geometry1 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI)
-                let geometry2 = new THREE.SphereGeometry(r, 32, 32, Math.PI, Math.PI)
-                let mesh = new THREE.MeshBasicMaterial({ color: 0x0000ff})
+                let mesh = new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide })
                 let half1 = new THREE.Mesh(geometry1, mesh)
                 let half2 = new THREE.Mesh(geometry2, mesh)
                 scene.add(half1)
@@ -256,7 +265,7 @@ function animate() {
 
                 half1.position.set(balls[i].position.x, balls[i].position.y, balls[i].position.z)
                 half2.position.set(balls[i].position.x, balls[i].position.y, balls[i].position.z)
-                
+
                 half1.vx = 0.5
                 half2.vx = -0.5
 
@@ -270,12 +279,12 @@ function animate() {
                 balls[i].visible = false;
                 let rmBall = balls.splice(i, 1)[0]
                 console.log(rmBall.position, "Leposition")
-                
+
                 for (let j = 0; j < 30; j++) {
                     //Como saber se é vertical swing or horizontal
                     particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, vertical, scene))
                 }
-                console.log(particles, "O ARray de particulas!!!!!") 
+                console.log(particles, "O ARray de particulas!!!!!")
             }
             else {
                 balls[i].material.color.setRGB(0, 0, 1);
@@ -287,7 +296,7 @@ function animate() {
             for (let i = 0; i < particles.length; i++) {
                 particles[i].show()
                 particles[i].move()
-                if(particles[i].remove()) {
+                if (particles[i].remove()) {
                     console.log(particles[i], "Removida")
                     particles.splice(i, 1)
                 }
