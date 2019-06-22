@@ -245,7 +245,7 @@ function animate() {
                 let rmBall = balls.splice(i, 1)[0]
                 console.log(rmBall.position, "Leposition")
                 cutBalls.push(rmBall)
-                for (let j = 0; j<3; j++){
+                for (let j = 0; j<7; j++){
                     //Como saber se é vertical swing or horizontal
                     particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, true, scene))
                 }
@@ -258,10 +258,10 @@ function animate() {
         }
         updateCutBalls()
         if(particles.length > 0) {
-            for(let p of particles) {
-                console.log(p, "Isto devia ser uma particula!!!!!")
-                p.show()
-                p.move()
+            for(let i = 0; i < particles.length; i++) {
+                particles[i].show()
+                particles[i].move()
+                if(particles[i].remove()) particles.splice(i, 1)
             }
         }
 

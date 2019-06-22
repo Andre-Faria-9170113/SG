@@ -10,14 +10,19 @@ class Particle {
          * 
          * 
          */
-        this.lifeSpan = 60
+        this.lifeSpan = 50
 
         /** Velocidades */
-        this.vx = vertical == true ? 0.1 : 0.5
-        this.vy = vertical == true ? -0.5 : 0.1
+        this.vx = Math.round(Math.random() * 2 - 1) / 100 + 0.6
+        this.vy = Math.round(Math.random() * 2 - 1) / 100 * - 1 + 0.6
         /** Esta velocidade vai ser sempre a mesma e constante */
-        this.vz = 0.1
+        this.vz = -3
 
+        if(vertical) {
+            console.log("Mandar particulas por corte na vertical")
+            
+        }
+        // let change = Math.round()
         /** Construir a bola */
         let widthSegments = 32, heightSegments = 32
         let particleGeometry = new THREE.SphereGeometry(this.r, widthSegments, heightSegments)
@@ -40,5 +45,13 @@ class Particle {
         if(this.vx > 0) this.vx -= 0.03
         if(this.vy > 0) this.vy -= 0.03
         if(this.vz > 0) this.vz -= 0.03
+    }
+
+    remove() {
+        if(this.lifeSpan <= 0) {
+            scene.remove(this.particle)
+            return true
+        }
+        return false
     }
 }
