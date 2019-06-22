@@ -241,11 +241,35 @@ function animate() {
             let BBox = new THREE.Box3().setFromObject(balls[i]);
             var collision = BBox.intersectsBox(swordBBox);
             if (collision == true && killBall == true) {
-                balls[i].material.color.setRGB(1, 0, 0);
+                //GERAR DUAS METADES DA BOLA ORIGINAL
+                let r = balls[i].radius
+                
+                let geometry1 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI)
+                let geometry2 = new THREE.SphereGeometry(r, 32, 32, Math.PI, Math.PI)
+                let mesh = new THREE.MeshBasicMaterial({ color: 0x0000ff})
+                let half1 = new THREE.Mesh(geometry1, mesh)
+                let half2 = new THREE.Mesh(geometry2, mesh)
+                scene.add(half1)
+                scene.add(half2)
+
+                half1.position.set(balls[i].position.x, balls[i].position.y, balls[i].position.z)
+                half2.position.set(balls[i].position.x, balls[i].position.y, balls[i].position.z)
+                
+                half1.vx = 0.5
+                half2.vx = -0.5
+
+                half1.vy = 0.5
+                half2.vy = -0.5
+
+                cutBalls.push(half1);
+                cutBalls.push(half2);
+
+                //balls[i].material.color.setRGB(1, 0, 0);
+                balls[i].visible = false;
                 let rmBall = balls.splice(i, 1)[0]
                 console.log(rmBall.position, "Leposition")
-                cutBalls.push(rmBall)
-                for (let j = 0; j<7; j++){
+                
+                for (let j = 0; j < 7; j++) {
                     //Como saber se é vertical swing or horizontal
                     particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, true, scene))
                 }
@@ -257,11 +281,11 @@ function animate() {
             console.log(collision)
         }
         updateCutBalls()
-        if(particles.length > 0) {
-            for(let i = 0; i < particles.length; i++) {
+        if (particles.length > 0) {
+            for (let i = 0; i < particles.length; i++) {
                 particles[i].show()
                 particles[i].move()
-                if(particles[i].remove()) particles.splice(i, 1)
+                if (particles[i].remove()) particles.splice(i, 1)
             }
         }
 
@@ -460,6 +484,7 @@ function generateBalls() {
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
         let mesh = new THREE.MeshBasicMaterial(materialProp)
         let ball = new THREE.Mesh(geometry, mesh)
+        ball.radius = r;
 
 
 
