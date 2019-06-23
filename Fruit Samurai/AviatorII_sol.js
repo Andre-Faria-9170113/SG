@@ -77,6 +77,9 @@ var HEIGHT = window.innerHeight;
 var WIDTH = window.innerWidth;
 
 window.onload = function init() {
+    init()
+}
+function init() {
     // set up the scene, the camera and the renderer
     createScene();
 
@@ -109,7 +112,6 @@ window.onload = function init() {
     // and render the scene on each frame
     animate();
 }
-
 //INIT THREE JS, SCREEN, SCENE, CAMERA AND MOUSE EVENTS
 function createScene() {
     // create an empty scene, that will hold all our elements such as objects, cameras and lights
@@ -566,6 +568,7 @@ function generateBalls() {
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
         let mesh = new THREE.MeshLambertMaterial({ color: new THREE.Color("rgb(255, 255, 255)") })
         let ball = new THREE.Mesh(geometry, mesh)
+        ball.material.color.setHex(0xff0000)
         ball.castShadow = true;
         ball.receiveShadow = true;
         ball.radius = r;
@@ -612,6 +615,7 @@ function updateBalls() {
                 if (jogador.vidas <= 0) {
                     console.log("Até te morreste te")
                     fini = true
+                    startOver()
                 }
             }
         }
@@ -659,14 +663,9 @@ function createText(nVidas) {
 
 
 }
-/**
- * Score - feito 
- * iluminação  - feito
- * Materiais - feito
- * chao
- */
+
 function createFloor() {
-    let floorGeometry = new THREE.PlaneGeometry(600, 1000, 100)
+    let floorGeometry = new THREE.PlaneGeometry(600, 1000, 1000, 10, 10)
     let floorMaterial = new THREE.MeshPhongMaterial({ color: 0xa0522d })
     let floor = new THREE.Mesh(floorGeometry, floorMaterial)
     floor.receiveShadow = true;
@@ -694,4 +693,33 @@ function createFloor() {
     wallL.position.x += 300
     wallL.rotation.y = Math.PI / 2;
 
+    console.log(floor)
+}
+
+function startOver() {
+    /**
+     * Voltar ao inicio,
+     * jogador
+     */
+    let textGeometry = new THREE.TextGeometry("Clica em qualquer tecla para recomeçar", {
+        font: font,
+        size: 7,
+        height: 0,
+        curveSegments: 30,
+        bevelThickness: 0.7,
+        bevelSize: 0.4,
+        // bevelEnabled: true,
+        bevelOffset: 0,
+        bevelSegments: 1
+    })
+    textGeometry.computeBoundingBox()
+    textGeometry.computeVertexNormals()
+    let textMesh = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    let text = new THREE.Mesh(textGeometry, textMesh)
+    // console.log(text)
+    text.position.set(50, 50, 50)
+    document.addEventListener('keypress', () => {
+        init()
+        document.removeEventListener('keypress')
+    })
 }
