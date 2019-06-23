@@ -222,7 +222,7 @@ function handleWindowResize() {
 function createLights() {
     // A hemisphere light is a gradient colored light 
     // Parameters: sky color, ground color, intensity of the light
-    hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, 0.9);
+    hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x0000ff, 0.9);
 
 
     // make the hemisphere light FOLLOW THE PLANE object
@@ -635,7 +635,7 @@ function createText(nVidas) {
  */
 function createFloor() {
     let floorGeometry = new THREE.PlaneGeometry(600, 1000, 1000, 10, 10)
-    let floorMaterial = new THREE.MeshPhongMaterial({color: 0x999999    })
+    let floorMaterial = new THREE.MeshPhongMaterial({color: 0xa0522d})
     let floor = new THREE.Mesh(floorGeometry, floorMaterial)
     floor.castShadow = true;
     floor.receiveShadow = true;

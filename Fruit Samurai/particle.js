@@ -1,6 +1,6 @@
 class Particle {
     constructor(x, y, z, vertical, scene) {
-        this.r = 0.5 // Mudar em principio
+        this.r = 0.9 // Mudar em principio
         /** Posição */
         this.x = x
         this.y = y
