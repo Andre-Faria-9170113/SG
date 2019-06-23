@@ -239,9 +239,9 @@ function createLights() {
     scene.add(light);
 
     //Set up shadow properties for the light
-    light.shadow.camera.left = -300;  // default
-    light.shadow.camera.right = 300; // default
-    light.shadow.camera.top = 300;    // default
+    light.shadow.camera.left = -310;  // default
+    light.shadow.camera.right = 310; // default
+    light.shadow.camera.top = 500;    // default
     light.shadow.camera.bottom = 0;     // default
     light.shadow.camera.far = 1000;     // default
 
@@ -304,8 +304,10 @@ function animate() {
                     geometry1 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2)
                     geometry2 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2)
                 }
-
-                let mesh = new THREE.MeshLambertMaterial({ color: new THREE.Color("rgb(0, 0, 255)"), side: THREE.DoubleSide })
+                
+                //console.log("balls[i]: "+balls[i])
+                let halfColor = balls[i].color
+                let mesh = new THREE.MeshLambertMaterial({ color: halfColor, side: THREE.DoubleSide })
                 let half1 = new THREE.Mesh(geometry1, mesh)
                 let half2 = new THREE.Mesh(geometry2, mesh)
                 half1.castShadow = true;
@@ -354,9 +356,9 @@ function animate() {
                 }
                 //console.log(particles, "O ARray de particulas!!!!!")
             }
-            else {
-                balls[i].material.color.setRGB(0, 0, 1);
-            }
+            // else {
+            //     balls[i].material.color.setRGB(0, 0, 1);
+            // }
             //console.log(collision)
         }
         updateCutBalls()
@@ -564,11 +566,12 @@ function generateBalls() {
          */
         let r = Math.round(Math.random() * 4 + 4), widthSegments = 32, heightSegments = 32
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
-        let mesh = new THREE.MeshLambertMaterial({ color: new THREE.Color("rgb(255, 255, 255)") })
-        let ball = new THREE.Mesh(geometry, mesh)
+        let ballMat = new THREE.MeshLambertMaterial({color: new THREE.Color("rgb("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+")")})
+        let ball = new THREE.Mesh(geometry, ballMat)
         ball.castShadow = true;
-        ball.receiveShadow = true;
+        ball.receiveShadow = true;  
         ball.radius = r;
+        ball.color= ballMat.color;
 
 
 
@@ -666,7 +669,7 @@ function createText(nVidas) {
  * chao
  */
 function createFloor() {
-    let floorGeometry = new THREE.PlaneGeometry(600, 1000, 100)
+    let floorGeometry = new THREE.PlaneGeometry(600, 1000, 100, 100)
     let floorMaterial = new THREE.MeshPhongMaterial({ color: 0xa0522d })
     let floor = new THREE.Mesh(floorGeometry, floorMaterial)
     floor.receiveShadow = true;
@@ -677,7 +680,7 @@ function createFloor() {
     //console.log(floor)
 
     //WALLS/CEILING
-    let wallGeometry = new THREE.PlaneGeometry(600, 1000, 100)
+    let wallGeometry = new THREE.PlaneGeometry(600, 1000, 100, 100)
     let wallMaterial = new THREE.MeshPhongMaterial({ color: 0xa0522d, side: THREE.DoubleSide })
     let wallR = new THREE.Mesh(wallGeometry, wallMaterial)
     let wallL = new THREE.Mesh(wallGeometry, wallMaterial)
