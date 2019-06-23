@@ -81,8 +81,6 @@ window.onload = function init() {
     // add the lights
     createLights();
 
-    //Criar tesxto
-    createText()
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('mousedown', handleMouseDown, false);
@@ -570,25 +568,4 @@ function updateCutBalls() {
             }
         }
     }
-}
-
-function createText() {
-    let loader = new THREE.FontLoader();
-    loader.load('fonts/droid/droid_sans_bold.typeface.json', (font) => {
-        let textGeometry = new THREE.TextGeometry("Vidas: 3", {
-            font: font,
-            size: 10,
-            height: 3,
-            curveSegments: 12,
-            bevelEnabled: true,
-            bevelThickness: 10,
-            bevelSize: 8,
-            bevelOffset: 0,
-            bevelSegments: 5
-        })
-        let capsule = new THREE.Object3D()
-        capsule.add(textGeometry)
-        console.log(textGeometry, "TEXTO!!!!!")
-        scene.add(capsule)
-    })
 }
