@@ -132,13 +132,13 @@ function createScene() {
     // configure renderer clear color
     renderer.setClearColor("#e4e0ba");
 
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
-        new THREE.MeshBasicMaterial({
-            opacity: 0.0,
-            transparent: true,
-            visible: false
-        }));
-    scene.add(plane);
+    // plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000, 10, 10),
+    //     new THREE.MeshBasicMaterial({
+    //         opacity: 0.0,
+    //         transparent: true,
+    //         visible: false
+    //     }));
+    // scene.add(plane);
 
     /*****************************
     * SHADOWS 
@@ -271,7 +271,7 @@ function animate() {
                     geometry2 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2)
                 }
 
-                let mesh = new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide })
+                let mesh = new THREE.MeshLambertMaterial({ color: 0x0000ff, side: THREE.DoubleSide })
                 let half1 = new THREE.Mesh(geometry1, mesh)
                 let half2 = new THREE.Mesh(geometry2, mesh)
                 scene.add(half1)
@@ -527,7 +527,7 @@ function generateBalls() {
         let r = Math.round(Math.random() * 4 + 2), widthSegments = 32, heightSegments = 32
         let materialProp = { color: 0x0000ff }
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
-        let mesh = new THREE.MeshBasicMaterial(materialProp)
+        let mesh = new THREE.MeshLambertMaterial(materialProp)
         let ball = new THREE.Mesh(geometry, mesh)
         ball.radius = r;
 
