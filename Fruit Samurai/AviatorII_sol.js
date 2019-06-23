@@ -5,9 +5,7 @@ var scene, renderer, camera, plane, texto = null;
 
 let loader = new THREE.FontLoader();
 let font = null
-loader.load('fonts/helvetiker_regular.typeface.json', (res) => {
-    font = res
-})
+
 /** Espada  */
 var swordPivot;
 var sword;
@@ -89,12 +87,18 @@ window.onload = function init() {
     // add the lights
     createLights();
 
-    //Criar o texto
-    texto = createText("Vidas: 3 - Pontos: 0")
-    // console.log(texto, res) 
-    // console.log(texto)
-    scene.add(texto)
+    //Criar chão
+    createFloor()
 
+    //Criar o texto
+    loader.load('fonts/helvetiker_regular.typeface.json', (res) => {
+        font = res
+        texto = createText("Vidas: 3 - Pontos: 0")
+        // console.log(texto, res) 
+        // console.log(texto)
+        scene.add(texto)
+    })
+    
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('mousedown', handleMouseDown, false);
@@ -201,10 +205,10 @@ function createSword() {
     sword.castShadow = true;
     sword.receiveShadow = true;
 
-    var axes = new THREE.AxisHelper(100);
-    var axesScene = new THREE.AxisHelper(100);
-    swordPivot.add(axes)
-    scene.add(axesScene);
+    // var axes = new THREE.AxisHelper(100);
+    // var axesScene = new THREE.AxisHelper(100);
+    // swordPivot.add(axes)
+    // scene.add(axesScene);
 }
 
 function handleWindowResize() {
@@ -621,11 +625,17 @@ function createText(nVidas) {
     return text
 }
 /**
- * Score 
- * iluminação 
- * Materiais
- * Parede
+ * Score - feito 
+ * iluminação  - feito
+ * Materiais - feito
+ * chao
  */
-function createWall() {
-
+function createFloor() {
+    let floorGeometry = new THREE.PlaneGeometry(600, 1000, 1000, 10, 10)
+    let floorMaterial = new THREE.MeshPhongMaterial({color: 0xffff00, wireframe: true})
+    let floor = new THREE.Mesh(floorGeometry, floorMaterial)
+    scene.add(floor)
+    // floor.rotation.x = 0.1
+    floor.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI); 
+    console.log(floor)
 }
