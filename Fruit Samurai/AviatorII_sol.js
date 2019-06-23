@@ -678,7 +678,7 @@ function createFloor() {
     //console.log(floor)
 
     //WALLS/CEILING
-    let wallGeometry = new THREE.PlaneGeometry(600, 1000, 100, 100)
+    let wallGeometry = new THREE.PlaneGeometry(1100, 1000, 100, 100)
     let wallMaterial = new THREE.MeshPhongMaterial({ color: 0xa0522d, side: THREE.DoubleSide })
     let wallR = new THREE.Mesh(wallGeometry, wallMaterial)
     let wallL = new THREE.Mesh(wallGeometry, wallMaterial)
