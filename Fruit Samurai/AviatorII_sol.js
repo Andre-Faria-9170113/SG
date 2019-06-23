@@ -1,5 +1,5 @@
 // THREEJS RELATED VARIABLES
-var scene, renderer, camera, plane;
+var scene, renderer, camera, plane, texto = null;
 
 // 3D Models
 
@@ -71,6 +71,9 @@ let shiftKey = false;
 
 let vertical = true
 
+var HEIGHT = window.innerHeight;
+var WIDTH = window.innerWidth;
+
 window.onload = function init() {
     // set up the scene, the camera and the renderer
     createScene();
@@ -80,6 +83,14 @@ window.onload = function init() {
 
     // add the lights
     createLights();
+
+    //Criar o texto
+    createText("Vidas: 3").then((res) => {
+        texto = res
+        // console.log(texto, res) 
+        console.log(texto)
+        scene.add(texto)
+    })
 
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
@@ -191,8 +202,7 @@ function createSword() {
 
 function handleWindowResize() {
     // update height and width of the renderer and the camera
-    var HEIGHT = window.innerHeight;
-    var WIDTH = window.innerWidth;
+
     renderer.setSize(WIDTH, HEIGHT);
     camera.aspect = WIDTH / HEIGHT;
     camera.updateProjectionMatrix();
@@ -287,7 +297,7 @@ function animate() {
                 //balls[i].material.color.setRGB(1, 0, 0);
                 balls[i].visible = false;
                 let rmBall = balls.splice(i, 1)[0]
-                let nPaticles = Math.round((Math.random() +1)* 15 - 15)
+                let nPaticles = Math.round((Math.random() + 1) * 15 - 15)
                 for (let j = 0; j < nPaticles; j++) {
                     //Como saber se é vertical swing or horizontal
                     particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, vertical, scene))
@@ -533,7 +543,7 @@ function updateBalls() {
             balls[i].vy += grav;
 
             balls[i].position.x += balls[i].vx;
-            if (balls[i].position.y <= -3 || balls[i].position.x > 150 || balls[i].position.x < -150) {
+            if (balls[i].position.y <= -3 || balls[i].position.x > 300 || balls[i].position.x < -300) {
                 // console.log(balls[i], balls[i].geometry.parameters.radius)
                 scene.remove(balls[i])
                 balls.splice(i, 1)
@@ -543,8 +553,14 @@ function updateBalls() {
                  * o jogador não lhe acertou
                  */
                 jogador.vidas--
+                createText(`Vidas: ${jogador.vidas}`).then((res) => {
+                    texto = res
+                    // console.log(texto, res) 
+                    console.log(texto)
+                    scene.add(texto)
+                })
                 //console.log(jogador)
-                if (jogador.vidas < 0) {
+                if (jogador.vidas <= 0) {
                     console.log("Até te morreste te")
                     fini = true
                 }
@@ -568,4 +584,32 @@ function updateCutBalls() {
             }
         }
     }
+}
+
+function createText(nVidas) {
+    let loader = new THREE.FontLoader();
+
+    return new Promise((resolve, reject) => {
+        loader.load('fonts/helvetiker_regular.typeface.json', (font) => {
+            if (texto != null) scene.remove(texto)
+            let textGeometry = new THREE.TextGeometry(nVidas, {
+                font: font,
+                size: 10,
+                height: 1,
+                curveSegments: 30,
+                bevelThickness: 0.7,
+                bevelSize: 0.4,
+                bevelEnabled: true,
+                bevelOffset: 0,
+                bevelSegments: 1
+            })
+            textGeometry.computeBoundingBox()
+            textGeometry.computeVertexNormals()
+            let textMesh = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+            let text = new THREE.Mesh(textGeometry, textMesh)
+            console.log(text)
+            text.position.set(70,  190, 20)
+            resolve(text)
+        })
+    })
 }
