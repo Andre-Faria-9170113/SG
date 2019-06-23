@@ -586,7 +586,9 @@ function createText() {
             bevelOffset: 0,
             bevelSegments: 5
         })
-        textGeometry.center()
+        let capsule = new THREE.Object3D()
+        capsule.add(textGeometry)
         console.log(textGeometry, "TEXTO!!!!!")
+        scene.add(capsule)
     })
 }
