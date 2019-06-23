@@ -128,6 +128,7 @@ function createScene() {
     camera.position.y = 100;
 
     var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.castShadow = true;
     scene.add(directionalLight);
     directionalLight.position.set(0, 200, 300)
 
@@ -531,9 +532,10 @@ function generateBalls() {
          */
         let r = Math.round(Math.random() * 4 + 2), widthSegments = 32, heightSegments = 32
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
-        let mesh = new THREE.MeshLambertMaterial({color: new THREE.Color("rgb(255, 0, 0)")
-    })
+        let mesh = new THREE.MeshLambertMaterial({color: new THREE.Color("rgb(255, 0, 0)")})
         let ball = new THREE.Mesh(geometry, mesh)
+        ball.castShadow = true;
+        ball.receiveShadow = true;
         ball.radius = r;
 
 
@@ -633,8 +635,10 @@ function createText(nVidas) {
  */
 function createFloor() {
     let floorGeometry = new THREE.PlaneGeometry(600, 1000, 1000, 10, 10)
-    let floorMaterial = new THREE.MeshPhongMaterial({color: 0xffff00, wireframe: true})
+    let floorMaterial = new THREE.MeshPhongMaterial({color: 0x999999    })
     let floor = new THREE.Mesh(floorGeometry, floorMaterial)
+    floor.castShadow = true;
+    floor.receiveShadow = true;
     scene.add(floor)
     // floor.rotation.x = 0.1
     floor.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI); 
