@@ -85,10 +85,10 @@ window.onload = function init() {
     createLights();
 
     //Criar o texto
-    createText("Vidas: 3").then((res) => {
+    createText("Vidas: 3 - Pontos: 0").then((res) => {
         texto = res
         // console.log(texto, res) 
-        console.log(texto)
+        // console.log(texto)
         scene.add(texto)
     })
 
@@ -285,6 +285,14 @@ function animate() {
 
                 half1.vy = 0.5
                 half2.vy = -0.5
+
+                jogador.pontos += 10
+                createText(`Vidas: ${jogador.vidas} - Pontos: ${jogador.pontos}`).then((res) => {
+                    texto = res
+                    // console.log(texto, res) 
+                    // console.log(texto)
+                    scene.add(texto)
+                })
 
                 if (vertical) {
                     half1.rotateZ = -0.02
@@ -533,7 +541,7 @@ function generateBalls() {
         balls.push(ball)
         scene.add(ball)
 
-        console.log("added Ball " + balls.length + "")
+        // console.log("added Ball " + balls.length + "")
         /** Escolher um intervalo diferente */
         timeCount = 0
         intervalo = intervalos[Math.floor(Math.random() * 3)]
@@ -557,10 +565,10 @@ function updateBalls() {
                  * o jogador não lhe acertou
                  */
                 jogador.vidas--
-                createText(`Vidas: ${jogador.vidas}`).then((res) => {
+                createText(`Vidas: ${jogador.vidas} - Pontos: ${jogador.pontos}`).then((res) => {
                     texto = res
                     // console.log(texto, res) 
-                    console.log(texto)
+                    // console.log(texto)
                     scene.add(texto)
                 })
                 //console.log(jogador)
@@ -581,7 +589,7 @@ function updateCutBalls() {
             cutBalls[i].rotation.z += cutBalls[i].rotateZ;
 
             cutBalls[i].position.x += cutBalls[i].vx;
-            if (cutBalls[i].position.y <= -3 || cutBalls[i].position.x > 150 || cutBalls[i].position.x < -150) {
+            if (cutBalls[i].position.y <= -3 || cutBalls[i].position.x > 300 || cutBalls[i].position.x < -300) {
                 // console.log(balls[i], balls[i].geometry.parameters.radius)
                 scene.remove(cutBalls[i])
                 cutBalls.splice(i, 1)
@@ -599,11 +607,11 @@ function createText(nVidas) {
             let textGeometry = new THREE.TextGeometry(nVidas, {
                 font: font,
                 size: 10,
-                height: 1,
+                height: 0,
                 curveSegments: 30,
-                bevelThickness: 0,
-                bevelSize: 0,
-                bevelEnabled: true,
+                bevelThickness: 0.7,
+                bevelSize: 0.4,
+                // bevelEnabled: true,
                 bevelOffset: 0,
                 bevelSegments: 1
             })
@@ -611,9 +619,18 @@ function createText(nVidas) {
             textGeometry.computeVertexNormals()
             let textMesh = new THREE.MeshBasicMaterial({ color: 0xff0000 })
             let text = new THREE.Mesh(textGeometry, textMesh)
-            console.log(text)
-            text.position.set(70, 190, 20)
+            // console.log(text)
+            text.position.set(10, 190, 20)
             resolve(text)
         })
     })
+}
+/**
+ * Score 
+ * iluminação 
+ * Materiais
+ * Parede
+ */
+function createWall() {
+
 }
