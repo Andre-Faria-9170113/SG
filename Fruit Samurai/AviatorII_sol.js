@@ -97,7 +97,7 @@ window.onload = function init() {
         // console.log(texto)
         scene.add(texto)
     })
-    
+
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('mousedown', handleMouseDown, false);
@@ -127,13 +127,12 @@ function createScene() {
     camera.position.z = 200;
     camera.position.y = 100;
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.castShadow = true;
-    scene.add(directionalLight);
-    directionalLight.position.set(0, 200, 300)
+
 
     // create a render and set the size
     renderer = new THREE.WebGLRenderer();
+    renderer.shadowMap.enabled = true;
+    //renderer.shadowMap.type = THREE.PCFSoftShadowMap
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     // configure renderer clear color
@@ -151,7 +150,7 @@ function createScene() {
     * SHADOWS 
     ****************************/
     // enable shadow rendering
-    renderer.shadowMap.enabled = true;
+
 
     // add the output of the renderer to the DIV with id "world"
     document.getElementById('world').appendChild(renderer.domElement);
@@ -222,14 +221,42 @@ function handleWindowResize() {
 function createLights() {
     // A hemisphere light is a gradient colored light 
     // Parameters: sky color, ground color, intensity of the light
-    hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x0000ff, 0.9);
+    // hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x0000ff, 0.9);
+
+    // var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    // directionalLight.position.set(0, 200, 400)
+    // directionalLight.castShadow = true;
+    // directionalLight.shadowCameraVisible = true;
+    // directionalLight.shadowMapWidth = directionalLight.shadowMapHeight = 2048;
+    // directionalLight.shadow.camera.near = -1000;    // default
+    // directionalLight.shadow.camera.far = 1000;     // default
+    // scene.add(directionalLight);
+
+    //Create a DirectionalLight and turn on shadows for the light
+    var light = new THREE.DirectionalLight(0xffffff, 1, 100);
+    light.position.set(0, 200, 300); 			//default; light shining from top
+    light.castShadow = true;            // default  
+    scene.add(light);
+
+    //Set up shadow properties for the light
+    light.shadow.camera.left = -300;  // default
+    light.shadow.camera.right = 300; // default
+    light.shadow.camera.top = 300;    // default
+    light.shadow.camera.bottom = 0;     // default
+    light.shadow.camera.far = 1000;     // default
+
+    var helper = new THREE.CameraHelper(light.shadow.camera);
+    scene.add(helper);
+
+    var ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+    scene.add(ambientLight);
 
 
     // make the hemisphere light FOLLOW THE PLANE object
     //directionalLight.target = plane;
 
     // to activate the lights, just add them to the scene
-    scene.add(hemisphereLight);
+    //scene.add(hemisphereLight);
 
     // var helper = new THREE.CameraHelper(directionalLight.shadow.camera);
     // scene.add(helper);
@@ -281,6 +308,11 @@ function animate() {
                 let mesh = new THREE.MeshLambertMaterial({ color: new THREE.Color("rgb(0, 0, 255)"), side: THREE.DoubleSide })
                 let half1 = new THREE.Mesh(geometry1, mesh)
                 let half2 = new THREE.Mesh(geometry2, mesh)
+                half1.castShadow = true;
+                half1.receiveShadow = true;
+                half2.castShadow = true;
+                half2.receiveShadow = true;
+
                 scene.add(half1)
                 scene.add(half2)
 
@@ -530,9 +562,9 @@ function generateBalls() {
          * então os pontos vão ser calculados consoante 
          * o raio das bolas.
          */
-        let r = Math.round(Math.random() * 4 + 2), widthSegments = 32, heightSegments = 32
+        let r = Math.round(Math.random() * 4 + 4), widthSegments = 32, heightSegments = 32
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
-        let mesh = new THREE.MeshLambertMaterial({color: new THREE.Color("rgb(255, 0, 0)")})
+        let mesh = new THREE.MeshLambertMaterial({ color: new THREE.Color("rgb(255, 255, 255)") })
         let ball = new THREE.Mesh(geometry, mesh)
         ball.castShadow = true;
         ball.receiveShadow = true;
@@ -634,13 +666,32 @@ function createText(nVidas) {
  * chao
  */
 function createFloor() {
-    let floorGeometry = new THREE.PlaneGeometry(600, 1000, 1000, 10, 10)
-    let floorMaterial = new THREE.MeshPhongMaterial({color: 0xa0522d})
+    let floorGeometry = new THREE.PlaneGeometry(600, 1000, 100)
+    let floorMaterial = new THREE.MeshPhongMaterial({ color: 0xa0522d })
     let floor = new THREE.Mesh(floorGeometry, floorMaterial)
-    floor.castShadow = true;
     floor.receiveShadow = true;
+
     scene.add(floor)
     // floor.rotation.x = 0.1
-    floor.rotation.set(-Math.PI/2, Math.PI/2000, Math.PI); 
-    console.log(floor)
+    floor.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
+    //console.log(floor)
+
+    //WALLS/CEILING
+    let wallGeometry = new THREE.PlaneGeometry(600, 1000, 100)
+    let wallMaterial = new THREE.MeshPhongMaterial({ color: 0xa0522d, side: THREE.DoubleSide })
+    let wallR = new THREE.Mesh(wallGeometry, wallMaterial)
+    let wallL = new THREE.Mesh(wallGeometry, wallMaterial)
+    wallR.receiveShadow = true;
+    wallR.castShadow = true;
+    wallL.receiveShadow = true;
+    wallL.castShadow = true;
+
+    floor.add(wallR)
+    floor.add(wallL)
+    //ceiling.position.y += 70
+    wallR.position.x -= 300
+    wallR.rotation.y = Math.PI / 2;
+    wallL.position.x += 300
+    wallL.rotation.y = Math.PI / 2;
+
 }
