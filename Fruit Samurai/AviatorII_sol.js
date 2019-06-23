@@ -710,7 +710,6 @@ function startOver() {
         curveSegments: 30,
         bevelThickness: 0.7,
         bevelSize: 0.4,
-        bevelEnabled: true,
         bevelOffset: 0,
         bevelSegments: 1
     })
@@ -761,4 +760,5 @@ function keypressedStartOver() {
 
     // document.removeEventListener('keypress', keypressedStartOver)
     location.reload()
+
 }
