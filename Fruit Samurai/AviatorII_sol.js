@@ -77,9 +77,9 @@ var HEIGHT = window.innerHeight;
 var WIDTH = window.innerWidth;
 
 window.onload = function init() {
-    init()
+    start()
 }
-function init() {
+function start() {
     // set up the scene, the camera and the renderer
     createScene();
 
@@ -632,7 +632,7 @@ function updateCutBalls() {
             cutBalls[i].rotation.z += cutBalls[i].rotateZ;
 
             cutBalls[i].position.x += cutBalls[i].vx;
-            if (cutBalls[i].position.y <= -3 || cutBalls[i].position.x > 300 || cutBalls[i].position.x < -300) {
+            if (cutBalls[i].position.y <= -6 || cutBalls[i].position.x > 300 || cutBalls[i].position.x < -300) {
                 // console.log(balls[i], balls[i].geometry.parameters.radius)
                 scene.remove(cutBalls[i])
                 cutBalls.splice(i, 1)
@@ -695,7 +695,7 @@ function createFloor() {
     wallL.position.x += 300
     wallL.rotation.y = Math.PI / 2;
 
-    console.log(floor)
+    // console.log(floor)
 }
 
 function startOver() {
@@ -703,14 +703,14 @@ function startOver() {
      * Voltar ao inicio,
      * jogador
      */
-    let textGeometry = new THREE.TextGeometry("Clica em qualquer tecla para recomeçar", {
+    let textGeometry = new THREE.TextGeometry("Clica em qualquer tecla para voltar a jogar", {
         font: font,
         size: 7,
         height: 0,
         curveSegments: 30,
         bevelThickness: 0.7,
         bevelSize: 0.4,
-        // bevelEnabled: true,
+        bevelEnabled: true,
         bevelOffset: 0,
         bevelSegments: 1
     })
@@ -719,9 +719,46 @@ function startOver() {
     let textMesh = new THREE.MeshBasicMaterial({ color: 0xff0000 })
     let text = new THREE.Mesh(textGeometry, textMesh)
     // console.log(text)
-    text.position.set(50, 50, 50)
-    document.addEventListener('keypress', () => {
-        init()
-        document.removeEventListener('keypress')
-    })
+    text.position.set(-60, 100, 0)
+    scene.add(text)
+    document.addEventListener('keypress', keypressedStartOver)
+
+}
+function keypressedStartOver() {
+    
+    /** Remover todas as bolas dos arrays e particulas também 
+     * balls
+     * cutBalls
+     * particles
+    */
+    // jogador.vidas = 3
+    // jogador.score = 0
+    // fini = false
+
+    // if (balls.length > 0) {
+
+    //     for (let i = 0; i < balls.length; i++) {
+    //         scene.remove(balls[i])
+    //         balls.splice(i, 1)
+    //     }
+    // }
+    // if (cutBalls.length > 0) {
+
+    //     for (let i = 0; i < cutBalls.length; i++) {
+    //         scene.remove(cutBalls[i])
+    //         cutBalls.splice(i, 1)
+    //     }
+    // }
+    // if (particles.length > 0) {
+
+    //     for (let i = 0; i < particles.length; i++) {
+    //         scene.remove(particles[i])
+    //         particles.splice(i, 1)
+    //     }
+    // }
+    
+    // start()
+
+    // document.removeEventListener('keypress', keypressedStartOver)
+    location.reload()
 }
