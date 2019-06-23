@@ -81,6 +81,8 @@ window.onload = function init() {
     // add the lights
     createLights();
 
+    //Criar tesxto
+    createText()
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
     document.addEventListener('mousedown', handleMouseDown, false);
@@ -287,9 +289,8 @@ function animate() {
                 //balls[i].material.color.setRGB(1, 0, 0);
                 balls[i].visible = false;
                 let rmBall = balls.splice(i, 1)[0]
-                //console.log(rmBall.position, "Leposition")
-
-                for (let j = 0; j < 30; j++) {
+                let nPaticles = Math.round((Math.random() +1)* 15 - 15)
+                for (let j = 0; j < nPaticles; j++) {
                     //Como saber se é vertical swing or horizontal
                     particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, vertical, scene))
                 }
@@ -569,4 +570,23 @@ function updateCutBalls() {
             }
         }
     }
+}
+
+function createText() {
+    let loader = new THREE.FontLoader();
+    loader.load('fonts/droid/droid_sans_bold.typeface.json', (font) => {
+        let textGeometry = new THREE.TextGeometry("Vidas: 3", {
+            font: font,
+            size: 10,
+            height: 3,
+            curveSegments: 12,
+            bevelEnabled: true,
+            bevelThickness: 10,
+            bevelSize: 8,
+            bevelOffset: 0,
+            bevelSegments: 5
+        })
+        textGeometry.center()
+        console.log(textGeometry, "TEXTO!!!!!")
+    })
 }

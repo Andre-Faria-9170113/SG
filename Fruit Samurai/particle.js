@@ -1,6 +1,8 @@
 class Particle {
     constructor(x, y, z, vertical, scene) {
-        this.r = 0.5 // Mudar em principio
+        this.r = Math.round(Math.random()) // Mudar em principio
+        if(this.r == 0) this.r = 0.5
+        console.log(this.r, "RAIO!!!!")
         /** Posição */
         this.x = x
         this.y = y
@@ -25,8 +27,8 @@ class Particle {
             this.vy -= 3
         }
         else {
-            //console.log("Mandar particulas por corte na Horizontal!!!!!")
-            this.vx = this.vx * (-1) - 5
+            console.log("Mandar particulas por corte na Horizontal!!!!!")
+            this.vx = this.vx * (-1) - 4
         }
         // let change = Math.round()
         /** Construir a bola */
