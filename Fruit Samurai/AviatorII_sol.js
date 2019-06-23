@@ -3,6 +3,11 @@ var scene, renderer, camera, plane, texto = null;
 
 // 3D Models
 
+let loader = new THREE.FontLoader();
+let font = null
+loader.load('fonts/helvetiker_regular.typeface.json', (res) => {
+    font = res
+})
 /** Espada  */
 var swordPivot;
 var sword;
@@ -85,12 +90,10 @@ window.onload = function init() {
     createLights();
 
     //Criar o texto
-    createText("Vidas: 3 - Pontos: 0").then((res) => {
-        texto = res
-        // console.log(texto, res) 
-        // console.log(texto)
-        scene.add(texto)
-    })
+    texto = createText("Vidas: 3 - Pontos: 0")
+    // console.log(texto, res) 
+    // console.log(texto)
+    scene.add(texto)
 
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
@@ -287,12 +290,11 @@ function animate() {
                 half2.vy = -0.5
 
                 jogador.pontos += 10
-                createText(`Vidas: ${jogador.vidas} - Pontos: ${jogador.pontos}`).then((res) => {
-                    texto = res
-                    // console.log(texto, res) 
-                    // console.log(texto)
-                    scene.add(texto)
-                })
+
+                texto = createText(`Vidas: ${jogador.vidas} - Pontos: ${jogador.pontos}`)
+                // console.log(texto, res) 
+                // console.log(texto)
+                scene.add(texto)
 
                 if (vertical) {
                     half1.rotateZ = -0.02
@@ -565,12 +567,10 @@ function updateBalls() {
                  * o jogador não lhe acertou
                  */
                 jogador.vidas--
-                createText(`Vidas: ${jogador.vidas} - Pontos: ${jogador.pontos}`).then((res) => {
-                    texto = res
-                    // console.log(texto, res) 
-                    // console.log(texto)
-                    scene.add(texto)
-                })
+                texto = createText(`Vidas: ${jogador.vidas} - Pontos: ${jogador.pontos}`)
+                // console.log(texto, res) 
+                // console.log(texto)
+                scene.add(texto)
                 //console.log(jogador)
                 if (jogador.vidas <= 0) {
                     console.log("Até te morreste te")
@@ -599,31 +599,26 @@ function updateCutBalls() {
 }
 
 function createText(nVidas) {
-    let loader = new THREE.FontLoader();
 
-    return new Promise((resolve, reject) => {
-        loader.load('fonts/helvetiker_regular.typeface.json', (font) => {
-            if (texto != null) scene.remove(texto)
-            let textGeometry = new THREE.TextGeometry(nVidas, {
-                font: font,
-                size: 10,
-                height: 0,
-                curveSegments: 30,
-                bevelThickness: 0.7,
-                bevelSize: 0.4,
-                // bevelEnabled: true,
-                bevelOffset: 0,
-                bevelSegments: 1
-            })
-            textGeometry.computeBoundingBox()
-            textGeometry.computeVertexNormals()
-            let textMesh = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-            let text = new THREE.Mesh(textGeometry, textMesh)
-            // console.log(text)
-            text.position.set(10, 190, 20)
-            resolve(text)
-        })
+    if (texto != null) scene.remove(texto)
+    let textGeometry = new THREE.TextGeometry(nVidas, {
+        font: font,
+        size: 7,
+        height: 0,
+        curveSegments: 30,
+        bevelThickness: 0.7,
+        bevelSize: 0.4,
+        // bevelEnabled: true,
+        bevelOffset: 0,
+        bevelSegments: 1
     })
+    textGeometry.computeBoundingBox()
+    textGeometry.computeVertexNormals()
+    let textMesh = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    let text = new THREE.Mesh(textGeometry, textMesh)
+    // console.log(text)
+    text.position.set(30, 190, 20)
+    return text
 }
 /**
  * Score 
