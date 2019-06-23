@@ -21,11 +21,11 @@ class Particle {
         if (Math.random() > 0.5) this.vx *= -1
 
         if (vertical) {
-            console.log("Mandar particulas por corte na vertical")
+            //console.log("Mandar particulas por corte na vertical")
             this.vy -= 3
         }
         else {
-            console.log("Mandar particulas por corte na Horizontal!!!!!")
+            //console.log("Mandar particulas por corte na Horizontal!!!!!")
             this.vx = this.vx * (-1) - 5
         }
         // let change = Math.round()

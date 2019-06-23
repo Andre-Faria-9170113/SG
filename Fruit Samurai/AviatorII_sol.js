@@ -253,10 +253,10 @@ function animate() {
                     geometry2 = new THREE.SphereGeometry(r, 32, 32, 3 * Math.PI / 2, Math.PI)
                 }
                 else {
-                    geometry1 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI*2, 0, Math.PI/2)
-                    geometry2 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI*2, Math.PI/2, Math.PI/2)
+                    geometry1 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2)
+                    geometry2 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2)
                 }
-                
+
                 let mesh = new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide })
                 let half1 = new THREE.Mesh(geometry1, mesh)
                 let half2 = new THREE.Mesh(geometry2, mesh)
@@ -272,24 +272,33 @@ function animate() {
                 half1.vy = 0.5
                 half2.vy = -0.5
 
+                if (vertical) {
+                    half1.rotateZ = -0.02
+                    half2.rotateZ = 0.02
+                }
+                else {
+                    half1.rotateZ = -0.02
+                    half2.rotateZ = 0.02
+                }
+
                 cutBalls.push(half1);
                 cutBalls.push(half2);
 
                 //balls[i].material.color.setRGB(1, 0, 0);
                 balls[i].visible = false;
                 let rmBall = balls.splice(i, 1)[0]
-                console.log(rmBall.position, "Leposition")
+                //console.log(rmBall.position, "Leposition")
 
                 for (let j = 0; j < 30; j++) {
                     //Como saber se é vertical swing or horizontal
                     particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, vertical, scene))
                 }
-                console.log(particles, "O ARray de particulas!!!!!")
+                //console.log(particles, "O ARray de particulas!!!!!")
             }
             else {
                 balls[i].material.color.setRGB(0, 0, 1);
             }
-            console.log(collision)
+            //console.log(collision)
         }
         updateCutBalls()
         if (particles.length > 0) {
@@ -297,7 +306,7 @@ function animate() {
                 particles[i].show()
                 particles[i].move()
                 if (particles[i].remove()) {
-                    console.log(particles[i], "Removida")
+                    //console.log(particles[i], "Removida")
                     particles.splice(i, 1)
                 }
             }
@@ -506,7 +515,7 @@ function generateBalls() {
         ball.vx = Math.floor(Math.random() * 6 - 3);
         ball.vy = Math.ceil(Math.random() + 0.5);
 
-        ball.position.set(Math.floor(Math.random() * 100 - 50), -2, 3)
+        ball.position.set(Math.floor(Math.random() * 100 - 50), -2, -50)
 
         balls.push(ball)
         scene.add(ball)
@@ -549,7 +558,8 @@ function updateCutBalls() {
         for (let i = 0; i < cutBalls.length; i++) {
             // console.log(cutBalls[i])
             cutBalls[i].position.y += cutBalls[i].vy;
-            cutBalls[i].vy += grav;
+            cutBalls[i].vy += grav * 3;
+            cutBalls[i].rotation.z += cutBalls[i].rotateZ;
 
             cutBalls[i].position.x += cutBalls[i].vx;
             if (cutBalls[i].position.y <= -3 || cutBalls[i].position.x > 150 || cutBalls[i].position.x < -150) {
