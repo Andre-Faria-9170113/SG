@@ -121,6 +121,10 @@ function createScene() {
     camera.position.z = 200;
     camera.position.y = 100;
 
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    scene.add(directionalLight);
+    directionalLight.position.set(0, 200, 300)
+
     // create a render and set the size
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -151,7 +155,7 @@ function createScene() {
 
 function createSword() {
     var swordGeometry = new THREE.BoxGeometry(2, 100, 10);
-    var swordMaterial = new THREE.MeshPhongMaterial({ color: 0xd8d0d1 });
+    var swordMaterial = new THREE.MeshPhongMaterial({ color: 0xd8d0d1, shininess: 10 });
     sword = new THREE.Mesh(swordGeometry, swordMaterial);
 
     swordBBox = new THREE.Box3().setFromObject(sword);
@@ -597,8 +601,8 @@ function createText(nVidas) {
                 size: 10,
                 height: 1,
                 curveSegments: 30,
-                bevelThickness: 0.7,
-                bevelSize: 0.4,
+                bevelThickness: 0,
+                bevelSize: 0,
                 bevelEnabled: true,
                 bevelOffset: 0,
                 bevelSegments: 1
@@ -608,7 +612,7 @@ function createText(nVidas) {
             let textMesh = new THREE.MeshBasicMaterial({ color: 0xff0000 })
             let text = new THREE.Mesh(textGeometry, textMesh)
             console.log(text)
-            text.position.set(70,  190, 20)
+            text.position.set(70, 190, 20)
             resolve(text)
         })
     })
