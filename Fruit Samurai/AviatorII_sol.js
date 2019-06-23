@@ -7,6 +7,13 @@ let loader = new THREE.FontLoader();
 let font = null
 loader.load('fonts/helvetiker_regular.typeface.json', (res) => {
     font = res
+    //Criar o texto
+    texto = createText("Vidas: 3 - Pontos: 0")
+    // console.log(texto, res) 
+    // console.log(texto)
+    if (texto != null) {
+        scene.add(texto)
+    }
 })
 /** Espada  */
 var swordPivot;
@@ -89,11 +96,8 @@ window.onload = function init() {
     // add the lights
     createLights();
 
-    //Criar o texto
-    texto = createText("Vidas: 3 - Pontos: 0")
-    // console.log(texto, res) 
-    // console.log(texto)
-    scene.add(texto)
+
+
 
     // listen to the mouse
     document.addEventListener('mousemove', handleMouseMove, false);
@@ -274,7 +278,7 @@ function animate() {
                     geometry2 = new THREE.SphereGeometry(r, 32, 32, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2)
                 }
 
-                let mesh = new THREE.MeshLambertMaterial({ color: 0x0000ff, side: THREE.DoubleSide })
+                let mesh = new THREE.MeshLambertMaterial({ color: new THREE.Color("rgb(0, 0, 255)"), side: THREE.DoubleSide })
                 let half1 = new THREE.Mesh(geometry1, mesh)
                 let half2 = new THREE.Mesh(geometry2, mesh)
                 scene.add(half1)
@@ -527,9 +531,9 @@ function generateBalls() {
          * o raio das bolas.
          */
         let r = Math.round(Math.random() * 4 + 2), widthSegments = 32, heightSegments = 32
-        let materialProp = { color: 0x0000ff }
         let geometry = new THREE.SphereGeometry(r, widthSegments, heightSegments)
-        let mesh = new THREE.MeshLambertMaterial(materialProp)
+        let mesh = new THREE.MeshLambertMaterial({color: new THREE.Color("rgb(255, 0, 0)")
+    })
         let ball = new THREE.Mesh(geometry, mesh)
         ball.radius = r;
 
@@ -619,6 +623,8 @@ function createText(nVidas) {
     // console.log(text)
     text.position.set(30, 190, 20)
     return text
+
+
 }
 /**
  * Score 
