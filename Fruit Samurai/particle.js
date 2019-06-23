@@ -1,10 +1,11 @@
 class Particle {
-    constructor(x, y, z, vertical, scene) {
+    constructor(x, y, z, vertical, scene, color) {
         this.r = 0.9 // Mudar em principio
         /** Posição */
         this.x = x
         this.y = y
         this.z = z
+        this.color = color
 
         /** Vai ser logo na função de move() que se vai "disincrmentar"o lifeSpan
          * 
@@ -32,7 +33,7 @@ class Particle {
         /** Construir a bola */
         let widthSegments = 32, heightSegments = 32
         let particleGeometry = new THREE.SphereGeometry(this.r, widthSegments, heightSegments)
-        let particleMesh = new THREE.MeshBasicMaterial({ color: 0x458b00 })
+        let particleMesh = new THREE.MeshBasicMaterial({ color: this.color })
         this.particle = new THREE.Mesh(particleGeometry, particleMesh)
         scene.add(this.particle)
         this.particle.position.set(this.x, this.y, this.z)

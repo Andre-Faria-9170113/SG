@@ -354,7 +354,7 @@ function animate() {
                 let nPaticles = Math.round((Math.random() + 1) * 15 - 15)
                 for (let j = 0; j < nPaticles; j++) {
                     //Como saber se é vertical swing or horizontal
-                    particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, vertical, scene))
+                    particles.push(new Particle(rmBall.position.x, rmBall.position.y, rmBall.position.z, vertical, scene, rmBall.color))
                 }
                 //console.log(particles, "O ARray de particulas!!!!!")
             }
