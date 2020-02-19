@@ -5,12 +5,7 @@ class Particle {
         this.x = x
         this.y = y
         this.z = z
-        this.color = color
 
-        /** Vai ser logo na função de move() que se vai "disincrmentar"o lifeSpan
-         * 
-         * 
-         */
         this.lifeSpan = 20
 
         /** Velocidades */
@@ -22,18 +17,15 @@ class Particle {
         if (Math.random() > 0.5) this.vx *= -1
 
         if (vertical) {
-            //console.log("Mandar particulas por corte na vertical")
             this.vy -= 3
         }
         else {
-            //console.log("Mandar particulas por corte na Horizontal!!!!!")
             this.vx = this.vx * (-1) - 5
         }
-        // let change = Math.round()
         /** Construir a bola */
         let widthSegments = 32, heightSegments = 32
         let particleGeometry = new THREE.SphereGeometry(this.r, widthSegments, heightSegments)
-        let particleMesh = new THREE.MeshBasicMaterial({ color: this.color })
+        let particleMesh = new THREE.MeshBasicMaterial({ color: color })
         this.particle = new THREE.Mesh(particleGeometry, particleMesh)
         scene.add(this.particle)
         this.particle.position.set(this.x, this.y, this.z)
